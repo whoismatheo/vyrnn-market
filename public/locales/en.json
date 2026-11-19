@@ -1,0 +1,58 @@
+{
+  "shell": {
+    "skipToContent": "Skip to content",
+    "navigation": "Main navigation",
+    "language": "Language"
+  },
+  "nav": {
+    "overview": "Overview"
+  },
+  "footer": {
+    "dataBy": "Market data by",
+    "disclaimer": "For information only. Not financial advice."
+  },
+  "overview": {
+    "title": "Overview",
+    "description": "Live status of the vyrnn API and its market data provider.",
+    "status": {
+      "title": "Platform status",
+      "api": "API",
+      "provider": "Market data provider",
+      "plan": "Provider access",
+      "environment": "Environment",
+      "build": "Build",
+      "checked": "Last checked"
+    },
+    "value": {
+      "checking": "Checking",
+      "operational": "Operational",
+      "degraded": "Degraded",
+      "unreachable": "Unreachable",
+      "reachable": "Reachable",
+      "notAvailable": "Not available"
+    },
+    "plan": {
+      "public": "Public, no API key",
+      "demo": "Demo API key",
+      "pro": "Pro API key"
+    },
+    "environment": {
+      "production": "Production",
+      "preview": "Preview",
+      "development": "Development"
+    },
+    "refresh": "Refresh"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "message": "The address does not match any page in vyrnn.",
+    "action": "Back to overview"
+  },
+  "error": {
+    "loadView": {
+      "title": "This page could not be loaded",
+      "message": "Check your connection and try again."
+    },
+    "retry": "Try again"
+  }
+}

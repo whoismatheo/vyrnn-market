@@ -1,0 +1,58 @@
+{
+  "shell": {
+    "skipToContent": "Aller au contenu",
+    "navigation": "Navigation principale",
+    "language": "Langue"
+  },
+  "nav": {
+    "overview": "Aperçu"
+  },
+  "footer": {
+    "dataBy": "Données de marché de",
+    "disclaimer": "À titre informatif uniquement. Ne constitue pas un conseil financier."
+  },
+  "overview": {
+    "title": "Aperçu",
+    "description": "État en temps réel de l'API vyrnn et de son fournisseur de données de marché.",
+    "status": {
+      "title": "État de la plateforme",
+      "api": "API",
+      "provider": "Fournisseur de données de marché",
+      "plan": "Accès au fournisseur",
+      "environment": "Environnement",
+      "build": "Version",
+      "checked": "Dernière vérification"
+    },
+    "value": {
+      "checking": "Vérification",
+      "operational": "Opérationnelle",
+      "degraded": "Dégradée",
+      "unreachable": "Injoignable",
+      "reachable": "Joignable",
+      "notAvailable": "Indisponible"
+    },
+    "plan": {
+      "public": "Publique, sans clé d'API",
+      "demo": "Clé d'API Demo",
+      "pro": "Clé d'API Pro"
+    },
+    "environment": {
+      "production": "Production",
+      "preview": "Préproduction",
+      "development": "Développement"
+    },
+    "refresh": "Actualiser"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "message": "L'adresse ne correspond à aucune page de vyrnn.",
+    "action": "Retour à l'aperçu"
+  },
+  "error": {
+    "loadView": {
+      "title": "Cette page n'a pas pu être chargée",
+      "message": "Vérifiez votre connexion et réessayez."
+    },
+    "retry": "Réessayer"
+  }
+}
