@@ -54,8 +54,13 @@ test('every translation key referenced in the source exists', () => {
   assert.deepEqual(missing, []);
 });
 
-test('dynamically resolved plan and environment keys exist', () => {
-  for (const key of ['plan.public', 'plan.demo', 'plan.pro', 'environment.production', 'environment.preview', 'environment.development']) {
-    assert.ok(english.has(`overview.${key}`), key);
-  }
+test('dynamically resolved keys exist', () => {
+  const keys = [
+    ...['public', 'demo', 'pro'].map((value) => `status.plan.${value}`),
+    ...['production', 'preview', 'development'].map((value) => `status.environment.${value}`),
+    ...['1', '7', '30', '90', '365'].flatMap((value) => [`overview.chart.ranges.${value}`, `overview.chart.rangeNames.${value}`]),
+    ...['cap', 'volume'].map((value) => `markets.sort.${value}`),
+    ...['rank', 'asset', 'price', 'change', 'marketCap', 'volume', 'trend'].map((value) => `table.${value}`),
+  ];
+  for (const key of keys) assert.ok(english.has(key), key);
 });

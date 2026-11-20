@@ -1,8 +1,126 @@
 # vyrnn progress
 
+## v1.1 - Market dashboard
+
+Status: complete and verified except for the items listed under "Not performed".
+
+### Completed functionality
+
+- Overview is now a market dashboard: total market capitalization, 24h trading volume (with its share of market cap), Bitcoin dominance (with Ethereum), 24h market movement, a Bitcoin price chart with five ranges (24H, 7D, 1M, 3M, 1Y), a top 10 assets table, a Trending panel and a Top movers panel (gainers and losers).
+- Markets page: 50 assets per page with pagination, server-side sorting by market cap or volume, logos, price, 24h change, market cap, 24h volume and a 7 day sparkline. Page and sort live in the URL (`/markets?sort=volume&page=2`).
+- System status moved to `/status`, reachable from the footer. It is no longer part of the main experience.
+- Navigation: left sidebar on desktop (960px and up), bottom tab bar on mobile. Only Overview and Markets appear in navigation.
+- Language selector: custom dropdown replacing the native select. Compact trigger (globe, code on mobile, name on desktop), menu anchored directly under the trigger, no operating system picker. Closes on selection, outside click, Escape and Tab. Keyboard: Enter, Space and arrow keys open it, arrows, Home and End move, Escape returns focus to the trigger. Uses `menu` and `menuitemradio` roles. The translation system, dictionaries, persistence and detection are unchanged.
+- All new strings exist in EN, ES, PT and FR; numbers, currencies, percentages and dates follow the active locale.
+- States: skeleton loading, per-section error with retry, empty states, and a stale-data notice with the time of the saved data. Each dashboard section loads and fails independently.
+- Green and red are used only on market movement elements (change badges and sparklines). A browser test scans every element to enforce this.
+
+### Backend
+
+New endpoints, all built on the existing client, cache, rate limiter, validation and error model:
+
+| Endpoint | Parameters | Provider calls |
+| --- | --- | --- |
+| `GET /api/global` | none | `/global` |
+| `GET /api/markets` | `page` 1-100, `perPage` 1-100, `order` `market_cap_desc` or `volume_desc` | `/coins/markets` |
+| `GET /api/chart` | `id` (required), `days` 1, 7, 30, 90 or 365 | `/coins/{id}/market_chart` |
+| `GET /api/trending` | none | `/search/trending`, then `/coins/markets` for the listed ids |
+
+- Responses are `{ data, meta }` with `meta = { source, stale, updatedAt }`. `source` is `upstream`, `cache` or `stale`. `updatedAt` is when the provider data was fetched.
+- When the provider fails and an older cached copy exists, that copy is served with `stale: true` and only a few seconds of edge caching. Without a cached copy the endpoint returns an error. No substitute data is ever generated.
+- Provider payloads are normalized and validated. Unexpected shapes become `upstream_error`. Coin logos are accepted only from `coin-images.coingecko.com` and `assets.coingecko.com`. Sparklines are reduced to 32 points and chart series to 180 points.
+- The cache now stores a fetch timestamp with each entry (`fetchedAt`). The client returns it alongside `source`.
+- Edge cache lifetimes: global and markets 60 s, trending 300 s, chart 120 s to 1800 s by range.
+- Prices are in USD. Currency selection is not part of this version.
+
+### Files and architecture
+
+Added:
+
+- `api/global.js`, `api/markets.js`, `api/chart.js`, `api/trending.js` (thin entry points)
+- `api/_lib/endpoints.js`, `market-handler.js`, `normalizers.js`, `downsample.js`
+- `src/api/market.js`
+- `src/views/markets.js`, `src/views/status.js`
+- `src/components/`: `language-menu`, `icon`, `panel`, `segmented`, `stat-card`, `change-badge`, `sparkline`, `coin-cell`, `coin-table`, `asset-list`, `line-chart`, `pagination`, `data-state`
+- `src/utils/movers.js`, `src/utils/resource.js`
+- `src/styles/data.css`
+- Tests: `normalizers`, `endpoints`, `downsample`, `format`, `movers`, `resource`, plus `fixtures.js`
+
+Changed:
+
+- `api/_lib/coingecko.js` (cache entries carry `fetchedAt`)
+- `src/views/overview.js` (rewritten as the dashboard), `src/components/shell.js`, `src/routes.js`, `src/router.js` (views receive `navigate`), `src/main.js`, `src/utils/dom.js` (`svg` helper), `src/utils/format.js`
+- All stylesheets except `main.css` imports order; locale catalogs; `package.json` version; `tests/coingecko.test.js`, `tests/i18n.test.js`
+
+Removed: `src/components/language-select.js`.
+
+Notes:
+
+- Views follow the contract `{ mount(container, { params, query, navigate }) }` and may return an unmount function.
+- Data sections use `createResource` plus `renderResource`: one fetch per section, loading, error and ready states rendered in the same container.
+- The Bitcoin price is the reference chart. The provider's total market cap history requires a paid plan, so no total market cap chart is shown.
+- Top movers are derived from the 100 largest assets and labeled as such.
+- The chart is plain SVG and HTML; no charting dependency was added. `package.json` still has a single dev dependency (Vite).
+- Fixed during testing: the chart tooltip disappeared when a finger was lifted on touch devices; compact currency values showed trailing zeros (`$98.20B`).
+
+### Tests executed
+
+Unit tests (`npm test`, Node 22): 90 passed, 0 failed. Includes everything from v1.0 plus:
+
+- Normalizers: global, markets, chart and trending payloads, missing and malformed fields, image host allowlist, sparkline and series reduction.
+- Endpoints (mocked provider client): defaults, parameter forwarding, validation of every parameter, stale flag and edge cache headers, provider failures returning errors without data, malformed payloads, trending enrichment and ordering, method restrictions.
+- Formatting, movers ranking, resource loader (loading, error, superseded and aborted loads), translation catalogs (identical keys in four languages, referenced keys exist, dynamic keys exist).
+
+Browser tests (Chromium through Playwright): 113 of 113 checks passed. The real API handlers served the app; only the CoinGecko responses were stubbed (see Limitations).
+
+- Overview: stat values and derived details, chart rendering, hover tooltip and crosshair, range change request, table rows, logos, sparklines, gainers and losers verified against the backend response, trending order, green and red restricted to movement elements.
+- Markets: columns, pagination and history, server-side volume sort, empty state beyond the ranking.
+- Navigation: sidebar geometry on desktop, bottom bar on mobile, active item, client-side navigation, document titles.
+- Language dropdown: no native select, anchored position under the trigger, four options, checked state, selection, persistence across reload, Enter, ArrowDown, ArrowUp, Home, End, Escape, outside click and Tab, keyboard selection, touch selection, menu inside the viewport at 375px.
+- All four languages on Overview and Markets: headings, stat labels, table headers, navigation, locale number formats.
+- States: skeleton and busy state, provider failure with retry, independent chart failure, stale notice with the original timestamp and saved values, error after the stale window ends (old data is not shown), recovery, empty trending, monogram fallback for failed logos.
+- Layout: no horizontal overflow at 320, 375, 768, 1024, 1280 and 1440px on Overview, Markets and Status; touch tap on the chart; footer clear of the bottom bar.
+- No console errors, failed requests or CSP violations in the clean runs, with the production CSP header from `vercel.json` applied.
+
+Other checks executed:
+
+- `esbuild` (version 0.28.2, available locally) bundled `src/main.js` with code splitting and `src/styles/main.css` without errors. This confirms the module graph and CSS imports resolve. It is not a Vite build.
+- Source scan: no comments, TODO markers, `console.log`, debugger statements or emoji.
+- Manual HTTP requests to the four new endpoints and to invalid parameters, checking envelopes, cache headers and error bodies.
+
+### Not performed
+
+- `vite build` and `vite dev`: the sandbox has no network, so Vite cannot be installed. The production build was not run. Run `npm install` and `npm run build` before deploying.
+- Live CoinGecko requests: none were possible. The stubbed provider returned CoinGecko-shaped payloads built for the tests, with invented numbers. The shapes follow the provider's documented responses, but the live responses were not observed. The trending endpoint and the logo URLs depend on that format.
+- Real devices: the dropdown, bottom bar and touch behavior were tested in desktop Chromium emulation, not on an Android or iOS device.
+- Other browsers: Firefox and Safari were not tested.
+
+### Known limitations and unfinished work
+
+- No search, filters, watchlist or coin detail page; rows are not links.
+- No `package-lock.json` (same reason as v1.0).
+- Server cache and rate limiting are per serverless instance; Vercel edge caching is the shared layer.
+- Language changes remount the current view, so data is requested again (served from the server cache) and the chart range returns to 7D.
+- Keyless CoinGecko access has a low rate limit. The local call budget defaults to 10 per minute without a key and 25 with a demo key; set `COINGECKO_API_KEY` for production.
+- Chart colors are monochrome by design; period change is shown in the badge.
+- The status page is unchanged from v1.0 apart from its location and translation keys.
+
+### Suggested commit message
+
+```
+feat: add v1.1 market dashboard
+
+Replace the status overview with a market dashboard (global stats, Bitcoin
+price chart, top assets, trending, movers) and add a Markets page with
+pagination and sorting. Add /api/global, /api/markets, /api/chart and
+/api/trending on the existing CoinGecko client with stale-data reporting.
+Replace the native language select with an accessible dropdown, add a
+desktop sidebar and mobile tab bar, and move system status to /status.
+```
+
 ## v1.0 - Foundation
 
-Status: complete, not yet built with Vite (see Limitations).
+Status: complete.
 
 ### Delivered
 

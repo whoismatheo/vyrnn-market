@@ -5,17 +5,121 @@
     "language": "Langue"
   },
   "nav": {
-    "overview": "Aperçu"
+    "overview": "Aperçu",
+    "markets": "Marchés"
   },
   "footer": {
     "dataBy": "Données de marché de",
+    "status": "État du système",
     "disclaimer": "À titre informatif uniquement. Ne constitue pas un conseil financier."
   },
+  "common": {
+    "refresh": "Actualiser",
+    "retry": "Réessayer",
+    "updatedAt": "Mis à jour à {time}"
+  },
+  "state": {
+    "loading": "Chargement",
+    "stale": "Affichage des données enregistrées de {time}. Les données en direct sont temporairement indisponibles."
+  },
+  "error": {
+    "dataTitle": "Impossible de charger les données",
+    "network": "La connexion à vyrnn a échoué. Vérifiez votre réseau et réessayez.",
+    "provider": "Le fournisseur de données de marché ne répond pas pour le moment. Réessayez dans un instant.",
+    "generic": "Une erreur s'est produite lors du chargement de ces données.",
+    "loadView": {
+      "title": "Cette page n'a pas pu être chargée",
+      "message": "Vérifiez votre connexion et réessayez."
+    }
+  },
   "overview": {
-    "title": "Aperçu",
+    "title": "Aperçu du marché",
+    "description": "Le marché crypto mondial, ses plus grands actifs et ce qui bouge aujourd'hui.",
+    "stats": {
+      "marketCap": "Capitalisation boursière",
+      "volume": "Volume d'échanges 24h",
+      "volumeShare": "{value} de la capitalisation",
+      "dominance": "Dominance du Bitcoin",
+      "ethDominance": "Ethereum {value}",
+      "movement": "Mouvement du marché 24h",
+      "movementDetail": "Variation de la capitalisation totale"
+    },
+    "chart": {
+      "title": "Prix du Bitcoin",
+      "rangeLabel": "Période",
+      "summary": "Prix du Bitcoin sur {range} : de {from} à {to}",
+      "empty": "Aucun historique de prix n'est disponible pour cette période.",
+      "ranges": {
+        "1": "24H",
+        "7": "7J",
+        "30": "1M",
+        "90": "3M",
+        "365": "1A"
+      },
+      "rangeNames": {
+        "1": "24 heures",
+        "7": "7 jours",
+        "30": "1 mois",
+        "90": "3 mois",
+        "365": "1 an"
+      }
+    },
+    "table": {
+      "title": "Principaux actifs",
+      "caption": "Plus grandes cryptomonnaies par capitalisation boursière",
+      "viewAll": "Voir tous les marchés"
+    },
+    "trending": {
+      "title": "Tendances",
+      "description": "Actuellement en tendance sur CoinGecko",
+      "empty": "Aucun actif en tendance n'est disponible pour le moment."
+    },
+    "movers": {
+      "title": "Plus fortes variations",
+      "description": "Parmi les 100 plus grands actifs, dernières 24h",
+      "mode": "Direction",
+      "gainers": "Hausses",
+      "losers": "Baisses",
+      "emptyGainers": "Aucun actif du top 100 n'est en hausse sur les dernières 24 heures.",
+      "emptyLosers": "Aucun actif du top 100 n'est en baisse sur les dernières 24 heures."
+    }
+  },
+  "markets": {
+    "title": "Marchés",
+    "description": "Cryptomonnaies classées par capitalisation boursière ou volume d'échanges.",
+    "caption": "Marchés des cryptomonnaies",
+    "sort": {
+      "label": "Trier par",
+      "cap": "Capitalisation",
+      "volume": "Volume"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "page": "Page {page}"
+    },
+    "empty": {
+      "title": "Aucun actif sur cette page",
+      "message": "Il n'y a plus d'actifs à afficher pour ce classement.",
+      "action": "Retour à la première page"
+    }
+  },
+  "table": {
+    "rank": "#",
+    "asset": "Actif",
+    "price": "Prix",
+    "change": "24h",
+    "marketCap": "Cap. boursière",
+    "volume": "Volume 24h",
+    "trend": "7j",
+    "marketCapShort": "Cap."
+  },
+  "status": {
+    "title": "État du système",
     "description": "État en temps réel de l'API vyrnn et de son fournisseur de données de marché.",
-    "status": {
-      "title": "État de la plateforme",
+    "panel": "Plateforme",
+    "labels": {
       "api": "API",
       "provider": "Fournisseur de données de marché",
       "plan": "Accès au fournisseur",
@@ -40,19 +144,11 @@
       "production": "Production",
       "preview": "Préproduction",
       "development": "Développement"
-    },
-    "refresh": "Actualiser"
+    }
   },
   "notFound": {
     "title": "Page introuvable",
     "message": "L'adresse ne correspond à aucune page de vyrnn.",
     "action": "Retour à l'aperçu"
-  },
-  "error": {
-    "loadView": {
-      "title": "Cette page n'a pas pu être chargée",
-      "message": "Vérifiez votre connexion et réessayez."
-    },
-    "retry": "Réessayer"
   }
 }

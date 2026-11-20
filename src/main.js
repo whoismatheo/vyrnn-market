@@ -33,7 +33,7 @@ async function bootstrap() {
       createStateMessage({
         title: t('error.loadView.title'),
         message: t('error.loadView.message'),
-        action: { label: t('error.retry'), onClick: () => window.location.reload() },
+        action: { label: t('common.retry'), onClick: () => window.location.reload() },
       }),
     onRouteChange(route, pathname) {
       activeRoute = route;

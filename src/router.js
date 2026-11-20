@@ -58,7 +58,7 @@ export function createRouter({ routes, notFoundRoute, outlet, renderLoadError, o
 
     current?.unmount?.();
     outlet.replaceChildren();
-    const unmount = view.mount(outlet, { params, query: new URLSearchParams(search) });
+    const unmount = view.mount(outlet, { params, query: new URLSearchParams(search), navigate });
     current = { route, unmount };
 
     onRouteChange(route, pathname);

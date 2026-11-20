@@ -5,17 +5,121 @@
     "language": "Language"
   },
   "nav": {
-    "overview": "Overview"
+    "overview": "Overview",
+    "markets": "Markets"
   },
   "footer": {
     "dataBy": "Market data by",
+    "status": "System status",
     "disclaimer": "For information only. Not financial advice."
   },
+  "common": {
+    "refresh": "Refresh",
+    "retry": "Try again",
+    "updatedAt": "Updated {time}"
+  },
+  "state": {
+    "loading": "Loading",
+    "stale": "Showing saved data from {time}. Live data is temporarily unavailable."
+  },
+  "error": {
+    "dataTitle": "Unable to load data",
+    "network": "The connection to vyrnn failed. Check your network and try again.",
+    "provider": "The market data provider is not responding right now. Try again in a moment.",
+    "generic": "Something went wrong while loading this data.",
+    "loadView": {
+      "title": "This page could not be loaded",
+      "message": "Check your connection and try again."
+    }
+  },
   "overview": {
-    "title": "Overview",
+    "title": "Market overview",
+    "description": "The global crypto market, its largest assets and what is moving today.",
+    "stats": {
+      "marketCap": "Market capitalization",
+      "volume": "24h trading volume",
+      "volumeShare": "{value} of market cap",
+      "dominance": "Bitcoin dominance",
+      "ethDominance": "Ethereum {value}",
+      "movement": "24h market movement",
+      "movementDetail": "Change in total market cap"
+    },
+    "chart": {
+      "title": "Bitcoin price",
+      "rangeLabel": "Time range",
+      "summary": "Bitcoin price over {range}: from {from} to {to}",
+      "empty": "No price history is available for this period.",
+      "ranges": {
+        "1": "24H",
+        "7": "7D",
+        "30": "1M",
+        "90": "3M",
+        "365": "1Y"
+      },
+      "rangeNames": {
+        "1": "24 hours",
+        "7": "7 days",
+        "30": "1 month",
+        "90": "3 months",
+        "365": "1 year"
+      }
+    },
+    "table": {
+      "title": "Top assets",
+      "caption": "Largest cryptocurrencies by market capitalization",
+      "viewAll": "View all markets"
+    },
+    "trending": {
+      "title": "Trending",
+      "description": "Currently trending on CoinGecko",
+      "empty": "No trending assets are available right now."
+    },
+    "movers": {
+      "title": "Top movers",
+      "description": "Among the 100 largest assets, last 24h",
+      "mode": "Direction",
+      "gainers": "Gainers",
+      "losers": "Losers",
+      "emptyGainers": "No asset in the top 100 is up over the last 24 hours.",
+      "emptyLosers": "No asset in the top 100 is down over the last 24 hours."
+    }
+  },
+  "markets": {
+    "title": "Markets",
+    "description": "Cryptocurrencies ranked by market capitalization or trading volume.",
+    "caption": "Cryptocurrency markets",
+    "sort": {
+      "label": "Sort by",
+      "cap": "Market cap",
+      "volume": "Volume"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page}"
+    },
+    "empty": {
+      "title": "No assets on this page",
+      "message": "There are no more assets to show for this ranking.",
+      "action": "Back to the first page"
+    }
+  },
+  "table": {
+    "rank": "#",
+    "asset": "Asset",
+    "price": "Price",
+    "change": "24h",
+    "marketCap": "Market cap",
+    "volume": "24h volume",
+    "trend": "7d",
+    "marketCapShort": "MCap"
+  },
+  "status": {
+    "title": "System status",
     "description": "Live status of the vyrnn API and its market data provider.",
-    "status": {
-      "title": "Platform status",
+    "panel": "Platform",
+    "labels": {
       "api": "API",
       "provider": "Market data provider",
       "plan": "Provider access",
@@ -40,19 +144,11 @@
       "production": "Production",
       "preview": "Preview",
       "development": "Development"
-    },
-    "refresh": "Refresh"
+    }
   },
   "notFound": {
     "title": "Page not found",
     "message": "The address does not match any page in vyrnn.",
     "action": "Back to overview"
-  },
-  "error": {
-    "loadView": {
-      "title": "This page could not be loaded",
-      "message": "Check your connection and try again."
-    },
-    "retry": "Try again"
   }
 }

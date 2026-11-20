@@ -73,7 +73,9 @@ test('serves stale data when the upstream fails after the ttl', async () => {
   await client.get('/ping', { ttlMs: 1000, staleMs: 10_000 });
   time.advance(2000);
   const result = await client.get('/ping', { ttlMs: 1000, staleMs: 10_000 });
-  assert.deepEqual(result, { data: { n: 1 }, source: 'stale' });
+  assert.deepEqual(result.data, { n: 1 });
+  assert.equal(result.source, 'stale');
+  assert.equal(result.fetchedAt, 1_000);
 });
 
 test('retries once on a server error and succeeds', async () => {

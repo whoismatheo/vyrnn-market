@@ -4,7 +4,22 @@ export const routes = [
     name: 'overview',
     titleKey: 'overview.title',
     navKey: 'nav.overview',
+    icon: 'overview',
     load: () => import('./views/overview.js'),
+  },
+  {
+    path: '/markets',
+    name: 'markets',
+    titleKey: 'markets.title',
+    navKey: 'nav.markets',
+    icon: 'markets',
+    load: () => import('./views/markets.js'),
+  },
+  {
+    path: '/status',
+    name: 'status',
+    titleKey: 'status.title',
+    load: () => import('./views/status.js'),
   },
 ];
 

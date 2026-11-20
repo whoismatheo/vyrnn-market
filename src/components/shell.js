@@ -1,44 +1,48 @@
 import { matchRoute } from '../router.js';
 import { el } from '../utils/dom.js';
-import { createLanguageSelect } from './language-select.js';
+import { createIcon } from './icon.js';
+import { createLanguageMenu } from './language-menu.js';
+
+function createBrand(className) {
+  return el(
+    'a',
+    { class: `brand ${className}`, href: '/', 'aria-label': 'vyrnn' },
+    el('span', { class: 'brand__mark', 'aria-hidden': 'true' }),
+    el('span', { class: 'brand__name' }, 'vyrnn'),
+  );
+}
 
 export function createShell({ routes }) {
   const outlet = el('main', { id: 'main', class: 'app-main', tabindex: '-1' });
   const navigation = routes
     .filter((route) => route.navKey)
-    .map((route) => ({ route, link: el('a', { class: 'nav-link', href: route.path, 'data-i18n': route.navKey }) }));
+    .map((route) => ({
+      route,
+      link: el('a', { class: 'nav-link', href: route.path }, createIcon(route.icon, { size: 20 }), el('span', { 'data-i18n': route.navKey })),
+    }));
 
   const element = el(
     'div',
     { class: 'app' },
     el('a', { class: 'skip-link', href: '#main', 'data-i18n': 'shell.skipToContent' }),
     el(
-      'header',
-      { class: 'app-header' },
+      'aside',
+      { class: 'sidebar' },
+      createBrand('brand--sidebar'),
       el(
-        'div',
-        { class: 'container app-header__inner' },
-        el(
-          'a',
-          { class: 'brand', href: '/', 'aria-label': 'vyrnn' },
-          el('span', { class: 'brand__mark', 'aria-hidden': 'true' }),
-          el('span', { class: 'brand__name' }, 'vyrnn'),
-        ),
-        el(
-          'nav',
-          { class: 'app-nav', 'data-i18n-aria-label': 'shell.navigation' },
-          el('ul', { class: 'app-nav__list' }, navigation.map(({ link }) => el('li', {}, link))),
-        ),
-        el('div', { class: 'app-tools' }, createLanguageSelect()),
+        'nav',
+        { class: 'nav', 'data-i18n-aria-label': 'shell.navigation' },
+        el('ul', { class: 'nav__list' }, navigation.map(({ link }) => el('li', {}, link))),
       ),
     ),
-    outlet,
     el(
-      'footer',
-      { class: 'app-footer' },
+      'div',
+      { class: 'app-body' },
+      el('header', { class: 'topbar' }, createBrand('brand--topbar'), el('div', { class: 'topbar__tools' }, createLanguageMenu())),
+      outlet,
       el(
-        'div',
-        { class: 'container app-footer__inner' },
+        'footer',
+        { class: 'app-footer' },
         el(
           'p',
           {},
@@ -46,6 +50,7 @@ export function createShell({ routes }) {
           ' ',
           el('a', { href: 'https://www.coingecko.com/en/api', target: '_blank', rel: 'noopener noreferrer' }, 'CoinGecko'),
         ),
+        el('a', { class: 'footer-link', href: '/status', 'data-i18n': 'footer.status' }),
         el('p', { 'data-i18n': 'footer.disclaimer' }),
       ),
     ),

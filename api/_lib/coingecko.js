@@ -115,8 +115,9 @@ export function createCoinGeckoClient({
     if (!pending) {
       pending = load(url)
         .then((data) => {
-          cache.set(url, data, { ttlMs, staleMs });
-          return data;
+          const entry = { data, fetchedAt: now() };
+          cache.set(url, entry, { ttlMs, staleMs });
+          return entry;
         })
         .finally(() => inflight.delete(url));
       inflight.set(url, pending);
@@ -127,12 +128,12 @@ export function createCoinGeckoClient({
   async function get(path, { params = {}, ttlMs = DEFAULT_TTL_MS, staleMs = DEFAULT_STALE_MS } = {}) {
     const url = buildUrl(path, params);
     const cached = cache.get(url);
-    if (cached?.fresh) return { data: cached.value, source: 'cache' };
+    if (cached?.fresh) return { ...cached.value, source: 'cache' };
 
     try {
-      return { data: await loadShared(url, ttlMs, staleMs), source: 'upstream' };
+      return { ...(await loadShared(url, ttlMs, staleMs)), source: 'upstream' };
     } catch (error) {
-      if (cached && isUpstreamError(error)) return { data: cached.value, source: 'stale' };
+      if (cached && isUpstreamError(error)) return { ...cached.value, source: 'stale' };
       throw error;
     }
   }
