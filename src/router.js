@@ -31,6 +31,10 @@ export function matchRoute(routes, pathname) {
   return null;
 }
 
+function setTitle(title) {
+  document.title = title ? `${title} - vyrnn` : 'vyrnn';
+}
+
 export function createRouter({ routes, notFoundRoute, outlet, renderLoadError, onRouteChange }) {
   let current = null;
   let renderToken = 0;
@@ -58,7 +62,13 @@ export function createRouter({ routes, notFoundRoute, outlet, renderLoadError, o
 
     current?.unmount?.();
     outlet.replaceChildren();
-    const unmount = view.mount(outlet, { params, query: new URLSearchParams(search), navigate });
+    const unmount = view.mount(outlet, {
+      params,
+      query: new URLSearchParams(search),
+      navigate,
+      from: window.history.state?.from ?? null,
+      setTitle,
+    });
     current = { route, unmount };
 
     onRouteChange(route, pathname);
@@ -71,7 +81,7 @@ export function createRouter({ routes, notFoundRoute, outlet, renderLoadError, o
   function navigate(target) {
     const url = new URL(target, window.location.origin);
     if (url.pathname + url.search === window.location.pathname + window.location.search) return;
-    window.history.pushState({}, '', url.pathname + url.search + url.hash);
+    window.history.pushState({ from: window.location.pathname + window.location.search }, '', url.pathname + url.search + url.hash);
     render({ resetScroll: true });
   }
 

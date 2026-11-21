@@ -16,6 +16,21 @@ export const routes = [
     load: () => import('./views/markets.js'),
   },
   {
+    path: '/watchlist',
+    name: 'watchlist',
+    titleKey: 'watchlist.title',
+    navKey: 'nav.watchlist',
+    icon: 'star',
+    load: () => import('./views/watchlist.js'),
+  },
+  {
+    path: '/coins/:id',
+    name: 'coin',
+    section: 'markets',
+    titleKey: 'detail.title',
+    load: () => import('./views/coin.js'),
+  },
+  {
     path: '/status',
     name: 'status',
     titleKey: 'status.title',

@@ -1,6 +1,7 @@
 import { createMarketHandler } from './market-handler.js';
-import { extractTrendingIds, normalizeChart, normalizeGlobal, normalizeMarkets } from './normalizers.js';
-import { identifier, integer, oneOf } from './validation.js';
+import { ApiError } from './errors.js';
+import { extractTrendingIds, normalizeChart, normalizeCoinDetail, normalizeGlobal, normalizeMarkets } from './normalizers.js';
+import { identifier, identifierList, integer, oneOf } from './validation.js';
 
 const GLOBAL_TTL_MS = 60_000;
 const MARKETS_TTL_MS = 60_000;
@@ -13,6 +14,8 @@ const CHART_RANGES = Object.freeze({
   365: { ttlMs: 1_800_000 },
 });
 const MARKET_ORDERS = ['market_cap_desc', 'volume_desc'];
+const MAX_WATCHLIST_IDS = 50;
+const COIN_TTL_MS = 60_000;
 
 export function createGlobalHandler(options) {
   return createMarketHandler({
@@ -32,14 +35,33 @@ export function createMarketsHandler(options) {
       page: integer({ min: 1, max: 100, fallback: 1 }),
       perPage: integer({ min: 1, max: 100, fallback: 50 }),
       order: oneOf(MARKET_ORDERS, { fallback: 'market_cap_desc' }),
+      ids: identifierList({ max: MAX_WATCHLIST_IDS }),
     },
     edgeSeconds: MARKETS_TTL_MS / 1000,
-    async load(client, { page, perPage, order }) {
+    async load(client, { page, perPage, order, ids }) {
+      const selection = ids ? { ids, per_page: ids.length, page: 1 } : { per_page: perPage, page };
       const result = await client.get('/coins/markets', {
-        params: { vs_currency: 'usd', order, per_page: perPage, page, sparkline: true },
+        params: { vs_currency: 'usd', order, sparkline: true, ...selection },
         ttlMs: MARKETS_TTL_MS,
       });
       return { data: { coins: normalizeMarkets(result.data) }, results: [result] };
+    },
+  });
+}
+
+export function createCoinHandler(options) {
+  return createMarketHandler({
+    ...options,
+    schema: { id: identifier({ required: true }) },
+    edgeSeconds: COIN_TTL_MS / 1000,
+    async load(client, { id }) {
+      const result = await client.get('/coins/markets', {
+        params: { vs_currency: 'usd', ids: [id], per_page: 1, sparkline: false, price_change_percentage: '7d,30d,1y' },
+        ttlMs: COIN_TTL_MS,
+      });
+      const coin = normalizeCoinDetail(result.data);
+      if (!coin) throw ApiError.notFound('Asset not found');
+      return { data: { coin }, results: [result] };
     },
   });
 }

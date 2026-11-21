@@ -57,8 +57,10 @@ export function createShell({ routes }) {
   );
 
   function setActive(pathname) {
+    const current = matchRoute(routes, pathname)?.route;
+    const section = current?.section ?? current?.name;
     for (const { route, link } of navigation) {
-      if (matchRoute([route], pathname)) link.setAttribute('aria-current', 'page');
+      if (route.name === section) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     }
   }

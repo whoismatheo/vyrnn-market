@@ -1,5 +1,117 @@
 # vyrnn progress
 
+## v1.2 - Asset pages, watchlist and mobile usability
+
+Status: complete and verified except for the items listed under "Not performed".
+
+### Completed functionality
+
+- Asset detail pages at `/coins/:id`: logo, name, symbol, market rank, current price, 24h change, market capitalization (with its 24h change), 24h volume (with its share of market cap), fully diluted valuation, circulating supply (with its share of max supply), interactive price chart with five ranges (24H, 7D, 1M, 3M, 1Y), and a Market statistics panel with the 24h range, 7 day, 30 day and 1 year changes, all-time high and low (price, date and distance), total and max supply. Fields the provider does not return are omitted, never filled in.
+- Every asset in Overview (top assets, trending, movers), Markets and Watchlist links to its detail page. Unknown identifiers show a not-found state with a way back.
+- Back link on detail pages returns to where the user came from, including the market page and sort (`/markets?sort=volume&page=2`), Overview or Watchlist. Direct visits default to Markets. The document title becomes the asset name.
+- Watchlist: star action on every table row and a labeled action on detail pages; dedicated `/watchlist` page with live market data, sparkline and the same columns as Markets; skeleton loading, error with retry, stale notice, empty state with a link to Markets, and a list of saved assets the provider no longer returns (each removable). Rows are ordered by market rank. Removal on the page updates immediately.
+- Persistence in `localStorage` (`vyrnn.watchlist`, versioned), restored after refresh and reopening. Corrupt or hostile stored data is sanitized, the limit is 50 assets (a message explains when it is reached), and a message appears if the browser cannot save. Changes in one tab update other open tabs. No accounts, authentication or external personal data.
+- Navigation: Overview, Markets and Watchlist on desktop and mobile. Asset pages keep Markets highlighted.
+- Mobile and responsive work:
+  - Bottom bar below 960px uses the full width with three equal items; below 960px no sidebar space is reserved. Compact bar in short landscape viewports (phones turned sideways).
+  - 960px to 1199px uses a narrow icon rail instead of the full sidebar; the full sidebar starts at 1200px.
+  - Tables: below 640px each row shows the full asset name (wrapping, not cut off), symbol, price, the 24h change under the price, and a line with rank, market cap and volume. Nothing important is hidden; only the 7 day sparkline is omitted below 860px.
+  - Touch targets of at least 44px on touch devices, larger base text sizes, stat cards, chart and detail header adapt to narrow screens.
+  - Tested from 320px upward (see tests).
+- Visual identity unchanged: monochrome palette, glass surfaces, green and red only on market movements (verified by a test that scans every element).
+
+### Backend
+
+Reused the existing client, cache, rate limiter, validation and error model. Changes:
+
+| Endpoint | Change |
+| --- | --- |
+| `GET /api/markets` | New optional `ids` (up to 50 comma separated identifiers). Used by the watchlist. When present it replaces `page` and `perPage`. |
+| `GET /api/coin?id=` | New. One provider call to `/coins/markets` with `ids`, `price_change_percentage=7d,30d,1y` and no sparkline. Returns `{ data: { coin }, meta }`. Responds 404 when the provider has no such asset. Edge cache 60 s. |
+
+- `identifierList` validator, `normalizeCoinDetail` normalizer (dates validated, missing values stay `null`).
+- Chart endpoint was reused as is for any asset.
+- Stale data handling is unchanged: `meta.stale` is shown as a notice with the time of the saved data.
+
+### Files and architecture
+
+Added:
+
+- `api/coin.js`
+- `src/state/watchlist.js` (store with injectable storage, sanitizing, limit, change events and cross-tab sync)
+- `src/views/coin.js`, `src/views/watchlist.js`
+- `src/components/watch-button.js`, `toast.js`, `price-chart.js`
+- `tests/watchlist.test.js`
+
+Changed:
+
+- Backend: `api/_lib/endpoints.js`, `normalizers.js`, `validation.js`
+- Frontend: `src/router.js` (history entries remember where the user came from; views receive `from` and `setTitle`), `src/routes.js` (watchlist and asset routes, `section` for the active navigation item), `src/api/market.js`, `src/components/coin-cell.js` (links, meta line), `coin-table.js` (watch column, mobile layout), `shell.js`, `icon.js`, `src/utils/format.js`, `src/views/overview.js` (now uses the shared price chart), `src/views/markets.js`
+- Styles: `tokens.css`, `layout.css`, `data.css`, `components.css`, `views.css`
+- Translation catalogs (EN, ES, PT, FR): chart keys moved to a shared `chart` group, new `watchlist` and `detail` groups, `nav.watchlist`, table keys
+- Tests: `endpoints`, `fixtures`, `i18n`, `normalizers`, `validation`
+
+Notes:
+
+- Watch buttons are stateless DOM nodes identified by `data-watch-id`; one module level subscription keeps every button on the page in sync, so there are no per-button listeners to clean up.
+- The detail view builds its chart after the asset loads, so the chart title uses the real asset name.
+- Language is still switched without replacing the translation system; views remount and use cached server responses.
+
+### Tests executed
+
+Unit tests (`npm test`, Node 22): 110 passed, 0 failed. New in v1.2:
+
+- Watchlist store: add, remove, order, duplicates, persistence between instances, sanitizing of corrupt data, limit, invalid identifiers, storage write failure, subscriptions, cross-tab storage events.
+- `identifierList` validation, `normalizeCoinDetail` (including missing fields), `/api/markets?ids`, `/api/coin` (details, 404, validation, stale flag), updated translation key checks.
+
+Browser tests (Chromium through Playwright, real API handlers with a stubbed CoinGecko): 161 new checks and the 113 checks from v1.1, all passed (274 of 274 in the final run).
+
+- Detail pages: header, price, statistics, omission of missing fields, chart range requests and tooltip, links from Overview, Markets, trending and movers, client-side navigation, document title, back link to Overview, to the exact market page and sort, and to Watchlist, direct visits, not-found state, very long asset names, stale notice.
+- Watchlist: empty state, add and remove from rows and detail pages, localStorage content, restore after reload, live data requested by identifier, removal on the page, second tab sync, empty state after the last removal, corrupt storage, unavailable assets, full watchlist message, loading state, provider failure with retry.
+- Mobile: bottom bar with three equal full-width items, content uses the full width, long names wrap, meta line, 24h under price, 44px star target, touch tap saves, controls at least 36px, detail page layout.
+- Responsive: no horizontal overflow and no table scrolling at 320, 360, 412, 768, 980, 1100, 1199, 1200, 1280 and 1440px widths and 844x390 landscape, on Overview, Markets, Watchlist, two asset pages and Status; sidebar mode per width (bottom bar, rail, full).
+- Translations: navigation, watchlist, detail and statistics in all four languages.
+- No console errors, failed requests or CSP violations in the clean runs, with the production CSP header from `vercel.json`.
+
+Bugs found by the tests and fixed:
+
+- The touch device rule gave the labeled watchlist button a fixed 44px width, so its text overflowed the screen on phones.
+- Row detail lines could force table scrolling at 320px; they now wrap below 360px.
+- Chart tooltip behavior on touch devices (v1.1) remains correct.
+
+Other checks executed:
+
+- `esbuild` (0.28.2, available locally) bundled `src/main.js` with code splitting and the stylesheet without errors. This confirms that imports resolve. It is not a Vite build.
+- Source scan: no comments, TODO markers, `console.log`, debugger statements or emoji; no unused exports besides items used by tests.
+
+### Not performed
+
+- `vite build` and `vite dev`: the sandbox has no network, so Vite cannot be installed. The production build was not run. Run `npm install` and `npm run build` before deploying.
+- Live CoinGecko requests: none were possible. The stub returned CoinGecko shaped payloads with invented numbers. The extended fields used by detail pages (all-time high and low, supply, 7 day, 30 day and 1 year changes) follow the provider's documented `/coins/markets` response but were not observed live, so check one real asset page after deploying.
+- Real devices and other browsers: touch behavior was tested with Chromium emulation only. Android and iOS devices, Firefox and Safari were not tested.
+
+### Known limitations
+
+- No search or filters, no coin descriptions, links or categories on detail pages.
+- Watchlist is limited to 50 assets and is local to the browser; it does not sync between devices.
+- Rows are ordered by market rank in the watchlist, not by the order assets were added.
+- The 7 day sparkline is hidden below 860px.
+- Language changes remount the current page and request data again from the server cache; the chart range returns to 7D.
+- Prices are in USD only. No `package-lock.json` (run `npm install` and commit it).
+- Cache and rate limiting are per serverless instance; Vercel edge caching is the shared layer.
+
+### Suggested commit message
+
+```
+feat: add v1.2 asset pages, watchlist and mobile layout
+
+Add /coins/:id detail pages with price chart and market statistics, a
+localStorage watchlist with its own page and row actions, and link every
+asset to its page. Add /api/coin and an ids parameter on /api/markets.
+Rework the mobile layout: full-width bottom bar, icon rail for mid-size
+screens, wrapping asset names and larger touch targets.
+```
+
 ## v1.1 - Market dashboard
 
 Status: complete and verified except for the items listed under "Not performed".

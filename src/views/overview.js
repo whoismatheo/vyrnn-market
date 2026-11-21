@@ -1,34 +1,25 @@
-import { fetchChart, fetchGlobal, fetchMarkets, fetchTrending } from '../api/market.js';
+import { fetchGlobal, fetchMarkets, fetchTrending } from '../api/market.js';
 import { createAssetList } from '../components/asset-list.js';
 import { createChangeBadge } from '../components/change-badge.js';
 import { createCoinTable } from '../components/coin-table.js';
 import { createEmptyState, createSkeleton, renderResource } from '../components/data-state.js';
 import { createIcon } from '../components/icon.js';
-import { createLineChart } from '../components/line-chart.js';
 import { createPanel } from '../components/panel.js';
+import { createPriceChart } from '../components/price-chart.js';
 import { createSegmented } from '../components/segmented.js';
 import { createStatCard } from '../components/stat-card.js';
 import { getLanguage, t } from '../i18n/index.js';
 import { el } from '../utils/dom.js';
-import {
-  formatChartTime,
-  formatChartTooltipTime,
-  formatCompactCurrency,
-  formatPercentShare,
-  formatPrice,
-  formatTime,
-  percentChange,
-} from '../utils/format.js';
+import { formatCompactCurrency, formatPercentShare, formatTime } from '../utils/format.js';
 import { topMovers } from '../utils/movers.js';
 import { createResource } from '../utils/resource.js';
 
-const CHART_ASSET_ID = 'bitcoin';
-const CHART_RANGES = ['1', '7', '30', '90', '365'];
-const DEFAULT_RANGE = '7';
+const CHART_ASSET = { id: 'bitcoin', name: 'Bitcoin' };
 const MARKETS_SAMPLE_SIZE = 100;
 const TABLE_ROWS = 10;
 const MOVERS_LIMIT = 5;
-const TABLE_COLUMNS = ['rank', 'asset', 'price', 'change', 'marketCap', 'trend'];
+const TRENDING_LIMIT = 7;
+const TABLE_COLUMNS = ['rank', 'asset', 'price', 'change', 'marketCap', 'trend', 'watch'];
 
 function createStatsGrid(global) {
   const locale = getLanguage();
@@ -56,44 +47,13 @@ function createStatsGrid(global) {
   );
 }
 
-function createChartBlock(points, days) {
-  const locale = getLanguage();
-  if (points.length < 2) return createEmptyState({ message: t('overview.chart.empty') });
-
-  const first = points[0][1];
-  const last = points[points.length - 1][1];
-  const range = t(`overview.chart.rangeNames.${days}`);
-
-  return el(
-    'div',
-    { class: 'chart-block' },
-    el(
-      'div',
-      { class: 'chart-summary' },
-      el('span', { class: 'chart-summary__price' }, formatPrice(last, locale)),
-      createChangeBadge(percentChange(first, last), locale),
-      el('span', { class: 'chart-summary__range' }, range),
-    ),
-    createLineChart({
-      points,
-      label: t('overview.chart.summary', { range, from: formatPrice(first, locale), to: formatPrice(last, locale) }),
-      formatAxisValue: (value) => formatCompactCurrency(value, locale),
-      formatAxisTime: (time) => formatChartTime(time, Number(days), locale),
-      formatTooltipValue: (value) => formatPrice(value, locale),
-      formatTooltipTime: (time) => formatChartTooltipTime(time, Number(days), locale),
-    }),
-  );
-}
-
 export default {
   mount(container) {
-    let chartDays = DEFAULT_RANGE;
     let moversMode = 'gainers';
     let marketsState = { phase: 'loading' };
 
     const statsRegion = el('div', { class: 'stats' });
     const updated = el('span', { class: 'page__updated' });
-    const chartRegion = el('div', { class: 'panel__region' });
     const tableRegion = el('div', { class: 'panel__region' });
     const trendingRegion = el('div', { class: 'panel__region' });
     const moversRegion = el('div', { class: 'panel__region' });
@@ -110,15 +70,7 @@ export default {
       },
     );
 
-    const chart = createResource(
-      (signal) => fetchChart({ id: CHART_ASSET_ID, days: chartDays, signal }),
-      (state) =>
-        renderResource(chartRegion, state, {
-          skeleton: () => createSkeleton('chart'),
-          ready: (data) => createChartBlock(data.points, chartDays),
-          onRetry: () => chart.load(),
-        }),
-    );
+    const chart = createPriceChart({ assetId: CHART_ASSET.id, assetName: CHART_ASSET.name });
 
     function renderTable() {
       renderResource(tableRegion, marketsState, {
@@ -159,24 +111,10 @@ export default {
         renderResource(trendingRegion, state, {
           skeleton: () => createSkeleton('row', MOVERS_LIMIT),
           ready: ({ coins }) =>
-            coins.length === 0 ? createEmptyState({ message: t('overview.trending.empty') }) : createAssetList(coins.slice(0, 7), getLanguage()),
+            coins.length === 0 ? createEmptyState({ message: t('overview.trending.empty') }) : createAssetList(coins.slice(0, TRENDING_LIMIT), getLanguage()),
           onRetry: () => trending.load(),
         }),
     );
-
-    const chartPanel = createPanel({
-      title: t('overview.chart.title'),
-      actions: createSegmented({
-        label: t('overview.chart.rangeLabel'),
-        options: CHART_RANGES.map((value) => ({ value, label: t(`overview.chart.ranges.${value}`) })),
-        value: chartDays,
-        onChange: (value) => {
-          chartDays = value;
-          chart.load();
-        },
-      }),
-    });
-    chartPanel.body.append(chartRegion);
 
     const tablePanel = createPanel({
       title: t('overview.table.title'),
@@ -229,7 +167,7 @@ export default {
           ),
         ),
         statsRegion,
-        chartPanel.element,
+        chart.element,
         tablePanel.element,
         el('div', { class: 'panel-grid' }, trendingPanel.element, moversPanel.element),
       ),
@@ -238,7 +176,7 @@ export default {
     loadAll();
 
     return () => {
-      for (const resource of [stats, chart, markets, trending]) resource.abort();
+      for (const resource of [stats, markets, trending, chart]) resource.abort();
     };
   },
 };

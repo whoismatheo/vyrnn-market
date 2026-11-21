@@ -58,9 +58,11 @@ test('dynamically resolved keys exist', () => {
   const keys = [
     ...['public', 'demo', 'pro'].map((value) => `status.plan.${value}`),
     ...['production', 'preview', 'development'].map((value) => `status.environment.${value}`),
-    ...['1', '7', '30', '90', '365'].flatMap((value) => [`overview.chart.ranges.${value}`, `overview.chart.rangeNames.${value}`]),
+    ...['1', '7', '30', '90', '365'].flatMap((value) => [`chart.ranges.${value}`, `chart.rangeNames.${value}`]),
     ...['cap', 'volume'].map((value) => `markets.sort.${value}`),
-    ...['rank', 'asset', 'price', 'change', 'marketCap', 'volume', 'trend'].map((value) => `table.${value}`),
+    ...['rank', 'asset', 'price', 'change', 'marketCap', 'volume', 'trend', 'watch'].map((value) => `table.${value}`),
+    ...['marketCapShort', 'volumeShort'].map((value) => `table.${value}`),
+    ...['markets', 'watchlist', 'overview'].map((value) => `nav.${value}`),
   ];
   for (const key of keys) assert.ok(english.has(key), key);
 });

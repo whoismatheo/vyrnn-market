@@ -67,7 +67,7 @@
   gap: var(--space-4);
   min-height: var(--topbar-height);
   padding-inline: var(--gutter);
-  background: rgb(244 245 246 / 0.72);
+  background: rgb(244 245 246 / 0.92);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
 }
@@ -175,6 +175,18 @@
   color: var(--color-text-secondary);
 }
 
+@media (max-width: 959px) and (max-height: 500px) {
+  :root {
+    --tabbar-height: 2.75rem;
+  }
+
+  .nav-link {
+    flex-direction: row;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
+  }
+}
+
 @media (min-width: 960px) {
   .app {
     display: grid;
@@ -188,7 +200,8 @@
     display: flex;
     height: 100dvh;
     flex-direction: column;
-    padding: var(--space-5) var(--space-4);
+    align-items: stretch;
+    padding: var(--space-5) var(--space-3);
     border-right: 1px solid var(--color-border);
     background: rgb(244 245 246 / 0.55);
   }
@@ -199,7 +212,18 @@
 
   .brand--sidebar {
     display: inline-flex;
-    margin: 0 var(--space-3) var(--space-6);
+    justify-content: center;
+    margin: 0 0 var(--space-6);
+  }
+
+  .brand--sidebar .brand__name,
+  .nav-link span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .brand--topbar {
@@ -224,10 +248,9 @@
   }
 
   .nav-link {
-    height: 40px;
+    height: 44px;
     flex-direction: row;
-    justify-content: flex-start;
-    gap: var(--space-3);
+    justify-content: center;
     padding-inline: var(--space-3);
     border: 1px solid transparent;
     border-radius: var(--radius-md);
@@ -251,5 +274,34 @@
 
   .app-footer {
     padding-bottom: var(--space-5);
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --sidebar-width: 15rem;
+  }
+
+  .sidebar {
+    padding-inline: var(--space-4);
+  }
+
+  .brand--sidebar {
+    justify-content: flex-start;
+    margin-inline: var(--space-3);
+  }
+
+  .brand--sidebar .brand__name,
+  .nav-link span {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  .nav-link {
+    justify-content: flex-start;
+    gap: var(--space-3);
   }
 }

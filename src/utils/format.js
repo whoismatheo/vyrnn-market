@@ -51,6 +51,15 @@ export function formatInteger(value, locale) {
   return formatter(locale, { maximumFractionDigits: 0 }).format(value);
 }
 
+export function formatCompactNumber(value, locale) {
+  if (!isNumber(value)) return NO_VALUE;
+  return formatter(locale, { notation: 'compact', maximumFractionDigits: 2 }).format(value);
+}
+
+export function formatDate(value, locale) {
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(value));
+}
+
 export function formatTime(date, locale) {
   return new Intl.DateTimeFormat(locale, { timeStyle: 'short' }).format(date);
 }

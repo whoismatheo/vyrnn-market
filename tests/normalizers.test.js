@@ -104,3 +104,30 @@ test('extracts unique trending ids and ignores malformed entries', () => {
   assert.equal(extractTrendingIds({ coins: Array.from({ length: 30 }, (_, i) => ({ item: { id: `c${i}` } })) }).length, 10);
   assert.throws(() => extractTrendingIds({}), upstreamError);
 });
+
+test('normalizes the extended asset details', async () => {
+  const { coinDetailPayload } = await import('./fixtures.js');
+  const { normalizeCoinDetail } = await import('../api/_lib/normalizers.js');
+  const coin = normalizeCoinDetail(coinDetailPayload);
+
+  assert.equal(coin.id, 'bitcoin');
+  assert.equal(coin.rank, 1);
+  assert.equal(coin.sparkline, null);
+  assert.equal(coin.high24h, 93000.5);
+  assert.equal(coin.circulatingSupply, 19_800_000);
+  assert.equal(coin.maxSupply, 21_000_000);
+  assert.equal(coin.athDate, '2025-10-06T18:57:42.558Z');
+  assert.equal(coin.change7d, 3.3);
+  assert.equal(coin.change1y, 55.5);
+});
+
+test('keeps unknown extended fields as null instead of inventing values', async () => {
+  const { normalizeCoinDetail } = await import('../api/_lib/normalizers.js');
+  const coin = normalizeCoinDetail([{ id: 'x', name: 'X', symbol: 'x', ath_date: 'not a date', max_supply: null }]);
+  assert.equal(coin.maxSupply, null);
+  assert.equal(coin.athDate, null);
+  assert.equal(coin.ath, null);
+  assert.equal(coin.change30d, null);
+  assert.equal(normalizeCoinDetail([]), null);
+  assert.equal(normalizeCoinDetail([{ name: 'no id' }]), null);
+});

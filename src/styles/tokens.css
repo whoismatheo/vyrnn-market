@@ -44,7 +44,7 @@
   --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
 
   --text-xs: 0.75rem;
-  --text-sm: 0.8125rem;
+  --text-sm: 0.875rem;
   --text-base: 0.9375rem;
   --text-lg: 1.125rem;
   --text-xl: 1.5rem;
@@ -55,7 +55,7 @@
   --duration-base: 220ms;
 
   --topbar-height: 56px;
-  --sidebar-width: 15rem;
+  --sidebar-width: 4.5rem;
   --tabbar-height: 3.75rem;
   --container-width: 1240px;
   --gutter: clamp(1rem, 4vw, 2rem);

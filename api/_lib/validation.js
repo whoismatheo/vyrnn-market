@@ -43,6 +43,21 @@ export function identifier({ maxLength = 100, fallback, required = false } = {})
   };
 }
 
+export function identifierList({ max, fallback, required = false }) {
+  const pattern = /^[a-z0-9][a-z0-9._-]*$/;
+  return {
+    required,
+    fallback,
+    parse(raw, name) {
+      const ids = [...new Set(raw.split(',').filter(Boolean))];
+      if (ids.length === 0 || ids.length > max || ids.some((id) => id.length > 100 || !pattern.test(id))) {
+        throw invalid(name, `a comma separated list of up to ${max} lowercase identifiers`);
+      }
+      return ids.sort();
+    },
+  };
+}
+
 export function validateQuery(query, schema) {
   const unknown = Object.keys(query).filter((name) => !Object.hasOwn(schema, name));
   if (unknown.length > 0) {

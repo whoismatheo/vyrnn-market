@@ -66,3 +66,25 @@ export const chartPayload = {
 export const trendingPayload = {
   coins: ['solana', 'bitcoin', 'unlisted', 'solana', 'ethereum'].map((id) => ({ item: { id, name: id } })),
 };
+
+export const coinDetailPayload = [
+  {
+    ...marketCoins[0],
+    high_24h: 93000.5,
+    low_24h: 89500.25,
+    market_cap_change_percentage_24h: -1.1,
+    fully_diluted_valuation: 1_915_000_000_000,
+    circulating_supply: 19_800_000,
+    total_supply: 21_000_000,
+    max_supply: 21_000_000,
+    ath: 126_000,
+    ath_change_percentage: -27.6,
+    ath_date: '2025-10-06T18:57:42.558Z',
+    atl: 67.81,
+    atl_change_percentage: 134_000.5,
+    atl_date: '2013-07-06T00:00:00.000Z',
+    price_change_percentage_7d_in_currency: 3.3,
+    price_change_percentage_30d_in_currency: -4.2,
+    price_change_percentage_1y_in_currency: 55.5,
+  },
+];

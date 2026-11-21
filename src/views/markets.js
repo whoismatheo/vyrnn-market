@@ -11,7 +11,7 @@ import { createResource } from '../utils/resource.js';
 const PER_PAGE = 50;
 const MAX_PAGE = 100;
 const SORT_ORDERS = { cap: 'market_cap_desc', volume: 'volume_desc' };
-const COLUMNS = ['rank', 'asset', 'price', 'change', 'marketCap', 'volume', 'trend'];
+const COLUMNS = ['rank', 'asset', 'price', 'change', 'marketCap', 'volume', 'trend', 'watch'];
 
 function parsePage(value) {
   const page = Number(value);

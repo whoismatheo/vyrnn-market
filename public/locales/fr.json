@@ -6,7 +6,8 @@
   },
   "nav": {
     "overview": "Aperçu",
-    "markets": "Marchés"
+    "markets": "Marchés",
+    "watchlist": "Favoris"
   },
   "footer": {
     "dataBy": "Données de marché de",
@@ -43,26 +44,6 @@
       "ethDominance": "Ethereum {value}",
       "movement": "Mouvement du marché 24h",
       "movementDetail": "Variation de la capitalisation totale"
-    },
-    "chart": {
-      "title": "Prix du Bitcoin",
-      "rangeLabel": "Période",
-      "summary": "Prix du Bitcoin sur {range} : de {from} à {to}",
-      "empty": "Aucun historique de prix n'est disponible pour cette période.",
-      "ranges": {
-        "1": "24H",
-        "7": "7J",
-        "30": "1M",
-        "90": "3M",
-        "365": "1A"
-      },
-      "rangeNames": {
-        "1": "24 heures",
-        "7": "7 jours",
-        "30": "1 mois",
-        "90": "3 mois",
-        "365": "1 an"
-      }
     },
     "table": {
       "title": "Principaux actifs",
@@ -113,7 +94,9 @@
     "marketCap": "Cap. boursière",
     "volume": "Volume 24h",
     "trend": "7j",
-    "marketCapShort": "Cap."
+    "marketCapShort": "Cap.",
+    "watch": "Favoris",
+    "volumeShort": "Vol."
   },
   "status": {
     "title": "État du système",
@@ -150,5 +133,77 @@
     "title": "Page introuvable",
     "message": "L'adresse ne correspond à aucune page de vyrnn.",
     "action": "Retour à l'aperçu"
+  },
+  "chart": {
+    "title": "Prix de {asset}",
+    "rangeLabel": "Période",
+    "summary": "Prix de {asset} sur {range} : de {from} à {to}",
+    "empty": "Aucun historique de prix n'est disponible pour cette période.",
+    "ranges": {
+      "1": "24H",
+      "7": "7J",
+      "30": "1M",
+      "90": "3M",
+      "365": "1A"
+    },
+    "rangeNames": {
+      "1": "24 heures",
+      "7": "7 jours",
+      "30": "1 mois",
+      "90": "3 mois",
+      "365": "1 an"
+    }
+  },
+  "watchlist": {
+    "title": "Favoris",
+    "description": "Les actifs que vous suivez, enregistrés dans ce navigateur.",
+    "add": "Ajouter aux favoris",
+    "saved": "Dans les favoris",
+    "addNamed": "Ajouter {name} aux favoris",
+    "removeNamed": "Retirer {name} des favoris",
+    "full": "Votre liste de favoris est pleine. Vous pouvez suivre jusqu'à {max} actifs.",
+    "notSaved": "Ce navigateur n'a pas pu enregistrer vos favoris. Ils seront perdus à la fermeture de la page.",
+    "count": "{count} enregistrés",
+    "caption": "Actifs favoris",
+    "empty": {
+      "title": "Votre liste de favoris est vide",
+      "message": "Utilisez l'étoile sur Marchés ou sur la page d'un actif pour le suivre ici.",
+      "action": "Parcourir les marchés"
+    },
+    "missing": {
+      "title": "Actifs indisponibles",
+      "message": "Le fournisseur de données de marché ne renvoie plus ces actifs enregistrés.",
+      "remove": "Retirer",
+      "removeNamed": "Retirer {name} des favoris"
+    }
+  },
+  "detail": {
+    "title": "Détail de l'actif",
+    "back": "Retour à {section}",
+    "rank": "Rang n° {rank}",
+    "last24h": "24h",
+    "stats": {
+      "marketCap": "Capitalisation boursière",
+      "volume": "Volume d'échanges 24h",
+      "fdv": "Valorisation entièrement diluée",
+      "circulating": "Offre en circulation",
+      "ofMax": "{value} de l'offre maximale"
+    },
+    "info": {
+      "title": "Statistiques de marché",
+      "range24h": "Fourchette 24h",
+      "change7d": "Variation sur 7 jours",
+      "change30d": "Variation sur 30 jours",
+      "change1y": "Variation sur 1 an",
+      "ath": "Plus haut historique",
+      "atl": "Plus bas historique",
+      "totalSupply": "Offre totale",
+      "maxSupply": "Offre maximale"
+    },
+    "notFound": {
+      "title": "Actif introuvable",
+      "message": "Le fournisseur de données de marché n'a aucun actif avec cet identifiant.",
+      "action": "Retour à {section}"
+    }
   }
 }

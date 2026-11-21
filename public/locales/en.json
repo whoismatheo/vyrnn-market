@@ -6,7 +6,8 @@
   },
   "nav": {
     "overview": "Overview",
-    "markets": "Markets"
+    "markets": "Markets",
+    "watchlist": "Watchlist"
   },
   "footer": {
     "dataBy": "Market data by",
@@ -43,26 +44,6 @@
       "ethDominance": "Ethereum {value}",
       "movement": "24h market movement",
       "movementDetail": "Change in total market cap"
-    },
-    "chart": {
-      "title": "Bitcoin price",
-      "rangeLabel": "Time range",
-      "summary": "Bitcoin price over {range}: from {from} to {to}",
-      "empty": "No price history is available for this period.",
-      "ranges": {
-        "1": "24H",
-        "7": "7D",
-        "30": "1M",
-        "90": "3M",
-        "365": "1Y"
-      },
-      "rangeNames": {
-        "1": "24 hours",
-        "7": "7 days",
-        "30": "1 month",
-        "90": "3 months",
-        "365": "1 year"
-      }
     },
     "table": {
       "title": "Top assets",
@@ -113,7 +94,9 @@
     "marketCap": "Market cap",
     "volume": "24h volume",
     "trend": "7d",
-    "marketCapShort": "MCap"
+    "marketCapShort": "MCap",
+    "watch": "Watchlist",
+    "volumeShort": "Vol"
   },
   "status": {
     "title": "System status",
@@ -150,5 +133,77 @@
     "title": "Page not found",
     "message": "The address does not match any page in vyrnn.",
     "action": "Back to overview"
+  },
+  "chart": {
+    "title": "{asset} price",
+    "rangeLabel": "Time range",
+    "summary": "{asset} price over {range}: from {from} to {to}",
+    "empty": "No price history is available for this period.",
+    "ranges": {
+      "1": "24H",
+      "7": "7D",
+      "30": "1M",
+      "90": "3M",
+      "365": "1Y"
+    },
+    "rangeNames": {
+      "1": "24 hours",
+      "7": "7 days",
+      "30": "1 month",
+      "90": "3 months",
+      "365": "1 year"
+    }
+  },
+  "watchlist": {
+    "title": "Watchlist",
+    "description": "Assets you follow, saved in this browser.",
+    "add": "Add to watchlist",
+    "saved": "In watchlist",
+    "addNamed": "Add {name} to watchlist",
+    "removeNamed": "Remove {name} from watchlist",
+    "full": "Your watchlist is full. You can follow up to {max} assets.",
+    "notSaved": "This browser could not save your watchlist. It will be lost when you close the page.",
+    "count": "{count} saved",
+    "caption": "Watchlist assets",
+    "empty": {
+      "title": "Your watchlist is empty",
+      "message": "Use the star on Markets or on an asset page to follow assets here.",
+      "action": "Browse markets"
+    },
+    "missing": {
+      "title": "Unavailable assets",
+      "message": "The market data provider no longer returns these saved assets.",
+      "remove": "Remove",
+      "removeNamed": "Remove {name} from watchlist"
+    }
+  },
+  "detail": {
+    "title": "Asset details",
+    "back": "Back to {section}",
+    "rank": "Rank #{rank}",
+    "last24h": "24h",
+    "stats": {
+      "marketCap": "Market capitalization",
+      "volume": "24h trading volume",
+      "fdv": "Fully diluted valuation",
+      "circulating": "Circulating supply",
+      "ofMax": "{value} of max supply"
+    },
+    "info": {
+      "title": "Market statistics",
+      "range24h": "24h range",
+      "change7d": "7 day change",
+      "change30d": "30 day change",
+      "change1y": "1 year change",
+      "ath": "All-time high",
+      "atl": "All-time low",
+      "totalSupply": "Total supply",
+      "maxSupply": "Max supply"
+    },
+    "notFound": {
+      "title": "Asset not found",
+      "message": "The market data provider has no asset with this identifier.",
+      "action": "Back to {section}"
+    }
   }
 }

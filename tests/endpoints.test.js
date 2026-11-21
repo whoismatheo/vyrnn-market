@@ -174,3 +174,66 @@ test('all market endpoints reject other methods', async () => {
     assert.equal(res.statusCode, 405);
   }
 });
+
+test('markets endpoint can fetch a specific set of assets for the watchlist', async () => {
+  const client = fakeClient({ '/coins/markets': { data: marketCoins } });
+  const res = await call(createMarketsHandler, client, '/api/markets?ids=ethereum,bitcoin&perPage=5&page=9');
+  assert.equal(res.statusCode, 200);
+  assert.deepEqual(client.calls[0].params, {
+    vs_currency: 'usd',
+    order: 'market_cap_desc',
+    sparkline: true,
+    ids: ['bitcoin', 'ethereum'],
+    per_page: 2,
+    page: 1,
+  });
+});
+
+test('markets endpoint limits the number of requested assets', async () => {
+  const client = fakeClient({ '/coins/markets': { data: [] } });
+  const ids = Array.from({ length: 51 }, (_, i) => `coin${i}`).join(',');
+  assert.equal((await call(createMarketsHandler, client, `/api/markets?ids=${ids}`)).statusCode, 400);
+  assert.equal(client.calls.length, 0);
+});
+
+test('coin endpoint returns the extended market details of one asset', async () => {
+  const { createCoinHandler } = await import('../api/_lib/endpoints.js');
+  const { coinDetailPayload } = await import('./fixtures.js');
+  const client = fakeClient({ '/coins/markets': { data: coinDetailPayload } });
+  const res = await call(createCoinHandler, client, '/api/coin?id=bitcoin');
+  const body = res.json();
+
+  assert.equal(res.statusCode, 200);
+  assert.equal(body.data.coin.id, 'bitcoin');
+  assert.equal(body.data.coin.athChange, -27.6);
+  assert.deepEqual(client.calls[0].params, {
+    vs_currency: 'usd',
+    ids: ['bitcoin'],
+    per_page: 1,
+    sparkline: false,
+    price_change_percentage: '7d,30d,1y',
+  });
+  assert.equal(res.headers['cache-control'], 'public, max-age=0, s-maxage=60, stale-while-revalidate=120');
+  assert.equal(body.meta.stale, false);
+});
+
+test('coin endpoint reports unknown assets instead of inventing one', async () => {
+  const { createCoinHandler } = await import('../api/_lib/endpoints.js');
+  const client = fakeClient({ '/coins/markets': { data: [] } });
+  const res = await call(createCoinHandler, client, '/api/coin?id=not-a-coin');
+  assert.equal(res.statusCode, 404);
+  assert.equal(res.json().error.code, 'not_found');
+  assert.equal('data' in res.json(), false);
+});
+
+test('coin endpoint validates its input and flags stale details', async () => {
+  const { createCoinHandler } = await import('../api/_lib/endpoints.js');
+  const { coinDetailPayload } = await import('./fixtures.js');
+  const client = fakeClient({ '/coins/markets': { data: coinDetailPayload, source: 'stale' } });
+  for (const query of ['', 'id=Bitcoin', 'id=a,b', 'id=bitcoin&x=1']) {
+    assert.equal((await call(createCoinHandler, client, `/api/coin?${query}`)).statusCode, 400, query);
+  }
+  assert.equal(client.calls.length, 0);
+  const res = await call(createCoinHandler, client, '/api/coin?id=bitcoin');
+  assert.equal(res.json().meta.stale, true);
+});

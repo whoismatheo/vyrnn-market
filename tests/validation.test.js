@@ -44,3 +44,18 @@ test('rejects unknown, missing, repeated and malformed parameters', () => {
 test('does not treat inherited object keys as known parameters', () => {
   assert.throws(() => validateQuery({ id: 'x', constructor: '1' }, schema), ApiError);
 });
+
+test('parses identifier lists, removing duplicates and sorting them', async () => {
+  const { identifierList } = await import('../api/_lib/validation.js');
+  const list = { ids: identifierList({ max: 3 }) };
+  assert.deepEqual(validateQuery({ ids: 'ethereum,bitcoin,bitcoin' }, list), { ids: ['bitcoin', 'ethereum'] });
+  assert.deepEqual(validateQuery({}, list), { ids: undefined });
+});
+
+test('rejects identifier lists that are too long or malformed', async () => {
+  const { identifierList } = await import('../api/_lib/validation.js');
+  const list = { ids: identifierList({ max: 2 }) };
+  for (const ids of ['a,b,c', ',', 'Bitcoin', 'a,../b', 'a b']) {
+    assert.throws(() => validateQuery({ ids }, list), (error) => error instanceof ApiError && error.status === 400, ids);
+  }
+});

@@ -88,6 +88,37 @@ export function normalizeMarkets(raw) {
   return requireArray(raw, 'markets').map(normalizeCoin).filter(Boolean);
 }
 
+function normalizeDate(value) {
+  return typeof value === 'string' && !Number.isNaN(Date.parse(value)) ? new Date(value).toISOString() : null;
+}
+
+export function normalizeCoinDetail(raw) {
+  const [entry] = requireArray(raw, 'asset');
+  const coin = normalizeCoin(entry);
+  if (!coin) return null;
+
+  return {
+    ...coin,
+    sparkline: null,
+    high24h: toNumber(entry.high_24h),
+    low24h: toNumber(entry.low_24h),
+    marketCapChange24h: toNumber(entry.market_cap_change_percentage_24h),
+    fullyDilutedValuation: toNumber(entry.fully_diluted_valuation),
+    circulatingSupply: toNumber(entry.circulating_supply),
+    totalSupply: toNumber(entry.total_supply),
+    maxSupply: toNumber(entry.max_supply),
+    ath: toNumber(entry.ath),
+    athChange: toNumber(entry.ath_change_percentage),
+    athDate: normalizeDate(entry.ath_date),
+    atl: toNumber(entry.atl),
+    atlChange: toNumber(entry.atl_change_percentage),
+    atlDate: normalizeDate(entry.atl_date),
+    change7d: toNumber(entry.price_change_percentage_7d_in_currency),
+    change30d: toNumber(entry.price_change_percentage_30d_in_currency),
+    change1y: toNumber(entry.price_change_percentage_1y_in_currency),
+  };
+}
+
 export function normalizeChart(raw) {
   const prices = requireArray(requireObject(raw, 'chart').prices, 'chart');
   const points = prices.filter(
