@@ -18,6 +18,11 @@
   --color-up-soft: rgb(15 122 85 / 0.1);
   --color-down-soft: rgb(191 58 48 / 0.09);
 
+  --series-0: #0d0f12;
+  --series-1: #5b6068;
+  --series-2: #858c96;
+  --series-3: #0d0f12;
+
   --chrome-gradient: linear-gradient(135deg, #ffffff 0%, #cdd0d5 30%, #f3f4f5 52%, #a9adb4 76%, #e6e8ea 100%);
   --chrome-line: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.95) 16%, rgb(150 155 163 / 0.6) 50%, rgb(255 255 255 / 0.95) 84%, transparent);
 

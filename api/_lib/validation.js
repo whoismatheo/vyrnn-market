@@ -43,6 +43,20 @@ export function identifier({ maxLength = 100, fallback, required = false } = {})
   };
 }
 
+export function searchText({ min = 2, max = 40, required = false } = {}) {
+  return {
+    required,
+    fallback: undefined,
+    parse(raw, name) {
+      const text = raw.normalize('NFKC').trim().replace(/\s+/g, ' ').toLowerCase();
+      if (text.length < min || text.length > max || !/^[\p{L}\p{N} ._-]+$/u.test(text)) {
+        throw invalid(name, `between ${min} and ${max} letters, digits or spaces`);
+      }
+      return text;
+    },
+  };
+}
+
 export function identifierList({ max, fallback, required = false }) {
   const pattern = /^[a-z0-9][a-z0-9._-]*$/;
   return {

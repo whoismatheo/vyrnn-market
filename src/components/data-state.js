@@ -37,7 +37,7 @@ export function createEmptyState({ title, message, action }) {
   );
 }
 
-function createStaleNote(meta) {
+export function createStaleNote(meta) {
   if (!meta?.stale) return null;
   const time = formatTime(new Date(meta.updatedAt), getLanguage());
   return el('p', { class: 'stale-note', role: 'status' }, t('state.stale', { time }));

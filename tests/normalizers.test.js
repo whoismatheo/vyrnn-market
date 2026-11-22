@@ -131,3 +131,27 @@ test('keeps unknown extended fields as null instead of inventing values', async 
   assert.equal(normalizeCoinDetail([]), null);
   assert.equal(normalizeCoinDetail([{ name: 'no id' }]), null);
 });
+
+test('normalizes search results and drops entries that could not be selected', async () => {
+  const { normalizeSearch } = await import('../api/_lib/normalizers.js');
+  const { searchPayload } = await import('./fixtures.js');
+  const { coins } = normalizeSearch(searchPayload);
+
+  assert.deepEqual(coins.map((coin) => coin.id), ['bitcoin', 'bitcoin-cash', 'unranked-token']);
+  assert.equal(coins[0].symbol, 'BTC');
+  assert.equal(coins[0].rank, 1);
+  assert.equal(coins[0].image, 'https://coin-images.coingecko.com/coins/images/1/thumb/bitcoin.png');
+  assert.equal(coins[1].symbol, 'BCH');
+  assert.equal(coins[1].image, null);
+  assert.equal(coins[2].rank, null);
+  assert.equal(coins[2].image, 'https://assets.coingecko.com/coins/images/9/large/u.png');
+});
+
+test('limits search results and rejects malformed search payloads', async () => {
+  const { normalizeSearch } = await import('../api/_lib/normalizers.js');
+  const many = Array.from({ length: 40 }, (_, i) => ({ id: `coin${i}`, name: `Coin ${i}`, symbol: `c${i}` }));
+  assert.equal(normalizeSearch({ coins: many }).coins.length, 10);
+  assert.deepEqual(normalizeSearch({ coins: [] }), { coins: [] });
+  assert.throws(() => normalizeSearch({}), upstreamError);
+  assert.throws(() => normalizeSearch(null), upstreamError);
+});

@@ -88,3 +88,15 @@ export const coinDetailPayload = [
     price_change_percentage_1y_in_currency: 55.5,
   },
 ];
+
+export const searchPayload = {
+  coins: [
+    { id: 'bitcoin', name: 'Bitcoin', api_symbol: 'bitcoin', symbol: 'BTC', market_cap_rank: 1, thumb: 'https://coin-images.coingecko.com/coins/images/1/thumb/bitcoin.png', large: 'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png' },
+    { id: 'bitcoin-cash', name: 'Bitcoin Cash', symbol: 'bch', market_cap_rank: 18, thumb: 'https://tracker.example/x.png' },
+    { id: 'Bad Id', name: 'Invalid', symbol: 'bad', market_cap_rank: 5 },
+    { name: 'No id', symbol: 'x' },
+    null,
+    { id: 'unranked-token', name: 'Unranked', symbol: 'unr', market_cap_rank: null, large: 'https://assets.coingecko.com/coins/images/9/large/u.png' },
+  ],
+  exchanges: [],
+};

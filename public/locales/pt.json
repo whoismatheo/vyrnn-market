@@ -7,7 +7,8 @@
   "nav": {
     "overview": "Visão geral",
     "markets": "Mercados",
-    "watchlist": "Favoritos"
+    "watchlist": "Favoritos",
+    "compare": "Comparar"
   },
   "footer": {
     "dataBy": "Dados de mercado da",
@@ -204,6 +205,48 @@
       "title": "Ativo não encontrado",
       "message": "O fornecedor de dados de mercado não tem nenhum ativo com este identificador.",
       "action": "Voltar a {section}"
+    },
+    "compare": "Comparar"
+  },
+  "compare": {
+    "title": "Comparar ativos",
+    "description": "Coloque dois a quatro ativos lado a lado e veja como se comportaram no mesmo período.",
+    "picker": {
+      "label": "Adicionar um ativo",
+      "placeholder": "Pesquisar por nome ou símbolo",
+      "suggestions": "Principais ativos por capitalização",
+      "loading": "A pesquisar",
+      "noResults": "Nenhum ativo corresponde à sua pesquisa.",
+      "unavailable": "A pesquisa não está disponível neste momento. Tente novamente dentro de instantes.",
+      "full": "Pode comparar até {max} ativos. Remova um para adicionar outro.",
+      "results": "{count} resultados disponíveis"
+    },
+    "status": {
+      "count": "{count} de {max} selecionados"
+    },
+    "empty": {
+      "title": "Escolha ativos para comparar",
+      "message": "Selecione pelo menos {min} ativos para ver os preços e o desempenho lado a lado."
+    },
+    "needMore": "Adicione pelo menos mais um ativo para começar a comparar.",
+    "asset": {
+      "remove": "Remover {name} da comparação",
+      "unavailable": "Não há dados de mercado disponíveis para este ativo."
+    },
+    "chart": {
+      "title": "Desempenho",
+      "description": "Variação percentual desde o início do período selecionado.",
+      "summary": "Desempenho em {range}: {items}",
+      "empty": "Não há histórico de preços disponível para os ativos selecionados neste período.",
+      "noHistory": "Sem histórico",
+      "unavailable": "Indisponível",
+      "startsOn": "O histórico começa em {date}",
+      "partial": "A mostrar {shown} de {total} ativos."
+    },
+    "share": {
+      "copy": "Copiar ligação",
+      "copied": "Ligação copiada",
+      "failed": "Não foi possível copiar a ligação."
     }
   }
 }

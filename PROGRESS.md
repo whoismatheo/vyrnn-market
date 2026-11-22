@@ -1,5 +1,110 @@
 # vyrnn progress
 
+## v1.3 - Asset comparison
+
+Status: complete and verified except for the items listed under "Not performed".
+
+### Completed functionality
+
+- Compare page at `/compare`, added to the navigation (Overview, Markets, Watchlist, Compare) on desktop, rail and mobile bar.
+- Selection: search by name or symbol, 2 to 4 assets, individual removal, adding an asset without reloading the others. Fewer than 2 assets shows guidance; at 4 the picker is disabled with an explanation.
+- Picker (accessible combobox): suggestions are the top assets by market cap (the same request the Overview already makes), search starts at 2 characters and is debounced, results already selected are hidden, stale responses are cancelled, keyboard support (arrows, Enter, Escape, Tab), outside click closes, loading, empty and error messages, logos from the allowed host only.
+- Shareable URL: `/compare?ids=bitcoin,ethereum,solana&range=30`. The URL is updated in place with `replaceState` on every change, sanitized on load (invalid and duplicate identifiers dropped, maximum 4, unknown range ignored), restored by reload, back and forward, and language changes. A Copy link action uses the clipboard and reports success or failure. Asset pages link into the comparison with `/compare?ids=<id>`.
+- Comparison cards: logo, name, symbol, rank, price, 24h change, market capitalization and 24h volume, a link to the asset page, a remove button, and the line style used in the chart. Cards show loading, a provider error with retry, or a message when the provider does not know the asset.
+- Performance chart: every selected asset on one chart, normalized to percentage change from the first point of the selected period (0% at the start), zero baseline, percent axis, the five existing ranges (24H, 7D, 1M, 3M, 1Y), a crosshair with a tooltip that lists every asset with its percentage and price at the hovered time, and a legend with each asset, its period change and notes. Lines are distinguished by shade and dash pattern (solid black, dashed gray, solid silver, dotted black) so the chart works without color; green and red appear only on change badges.
+- Partial and missing data: an asset with no history is labeled "No history" (never 0%); a history that starts well after the period began is labeled with its start date and shows a dash in the tooltip before that date; a failed history is labeled unavailable with a retry while the other assets stay plotted, with a "Showing N of M assets" note; if every history fails the chart area shows an error with retry. Missing price, market cap, volume or rank render as a dash. Stale provider data shows one notice with the time of the saved data.
+- Translations in EN, ES, PT and FR for all new text. Responsive layout verified from 320px (cards in two columns on phones and up to four on desktop).
+
+### Backend
+
+Reused the client, cache, rate limiter, validation, timeouts and stale handling. Added one endpoint; everything else reuses existing ones.
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /api/search?q=` (new) | Provider `/search`. `q` is trimmed, lowercased, 2 to 40 characters of letters, digits, spaces, dot, dash or underscore. Returns up to 10 assets (`id`, `name`, `symbol`, `rank`, `image`). Entries whose identifier could not be selected later are dropped. Edge cache 600 s. |
+| `GET /api/markets?ids=` (v1.2) | Market data for the selected assets. |
+| `GET /api/chart?id=&days=` (v1.1) | One history per asset, edge cached and shared with detail pages. |
+
+- Normalization of histories is done in the browser (`src/utils/performance.js`), so no endpoint is needed and cached histories are reused.
+- Upstream calls for a cold comparison of four assets: one markets request and four histories (plus the shared top 100 request when the picker is opened). Changing the range requests only the missing histories; adding an asset requests only that asset; removing requests nothing. The keyless provider limit (10 calls per minute by default) can be reached; the page then degrades to partial data as described above.
+
+### Files and architecture
+
+Added:
+
+- `api/search.js`
+- `src/views/compare.js`
+- `src/components/asset-picker.js`, `compare-asset.js`, `chart-legend.js`, `series-swatch.js`
+- `src/utils/compare-state.js`, `performance.js`, `series.js`, `ranges.js`
+- Tests: `compare-state`, `performance`
+
+Changed:
+
+- `api/_lib/endpoints.js`, `normalizers.js` (`normalizeSearch`), `validation.js` (`searchText`)
+- `src/components/line-chart.js` (generic multi-series chart with per-series markers and a render function for tooltips), `price-chart.js` (uses the generic chart), `icon.js`, `data-state.js` (stale note exported), `shell.js` unchanged but receives the new route
+- `src/router.js` (views receive `replace` to update the URL without navigating), `src/routes.js`, `src/api/market.js`, `src/views/coin.js` (Compare action), `src/utils/format.js` (percent axis format)
+- Styles: `tokens.css` (series colors), `data.css`, `components.css`, `views.css`
+- Translation catalogs, `package.json` (1.3.0), tests: `endpoints`, `fixtures`, `normalizers`, `validation`, `i18n`
+
+### Tests executed
+
+Unit tests (`npm test`, Node 22): 130 passed, 0 failed. New in v1.3:
+
+- Search endpoint: query normalization, parameters sent to the provider, validation of missing, short, long, symbol-containing and repeated parameters, stale flag, provider rate limit and failure without data, per-client rate limit returning 429.
+- Search text validator, search normalizer (invalid identifiers, image allowlist, result limit, malformed payloads).
+- Comparison state: parsing, sanitizing, maximum, canonical URLs, round trip.
+- Performance normalization: baseline, different price scales, unusable starting prices, flat series, late histories, nearest point lookup.
+
+Browser tests (Chromium through Playwright, real API handlers with a stubbed CoinGecko): final run 139 new checks, 161 from v1.2 and 113 from v1.1, all passed (413 of 413).
+
+- Selection: suggestions from the backend, keyboard navigation and ARIA attributes, adding by Enter and by click, exclusion of selected assets, URL updates, minimum of two assets, maximum of four, removal at every size, line styles kept after removal, only the new history requested when adding, nothing requested when removing.
+- Search: debounce into a single request, results with rank and logo, single character shows suggestions, empty result, Escape and outside click, slow earlier responses never overwrite newer ones, provider failure, hostile input rejected and never rendered as markup, rate limited search.
+- URL and navigation: range from the URL, copy link content, range changes, back and forward, reload, language change, sanitizing invalid and duplicate identifiers, extra identifiers dropped and URL canonicalized, link from asset pages.
+- Normalization: legend percentages equal the change computed from backend histories (+10.00%, -5.00%, +25.00%, 0.00%), identical baseline for all series, series ordering, zero line, percent axis, tooltip content at both ends, one marker per series, text summary for assistive technology.
+- Missing and partial data: no history, late history, unknown asset, missing market values rendered as dashes (never zero), market data failure with a working chart, failing history for one asset with retry, all histories failing, rate limited history, stale data and the end of the stale window.
+- Loading skeletons, mobile layout at 375px, touch targets of at least 44px, tooltip and picker inside the viewport.
+- No horizontal overflow at 320, 360, 375, 412, 768, 844x390, 1024, 1280 and 1440px on four different comparison URLs, and no console problems or CSP violations in clean runs. No stray `null`, `undefined`, `NaN` or `[object` text on any of 12 pages.
+- Green and red limited to movement elements.
+
+Bugs found by the tests and fixed:
+
+- The picker opened when it received focus programmatically (for example right after removing an asset). It now opens on click, typing or the arrow keys.
+- A literal "null" appeared under the comparison cards when four assets were selected (`replaceChildren` received `null`). Found during visual review; a page-wide check now guards against it.
+
+Other checks executed:
+
+- Real HTTP checks against the local server: `/api/search` returns 429 with `Retry-After` after the configured per-minute limit, and validation returns 400 for missing, short, symbol-containing, repeated and oversized parameters and 405 for other methods.
+- `esbuild` (0.28.2, available locally) bundled `src/main.js` with code splitting and the stylesheet without errors. It confirms that imports resolve; it is not a Vite build.
+- Source scan: no comments, TODO markers, `console.log`, debugger statements or emoji; no unused exports besides items used by tests.
+
+### Not performed
+
+- `vite build` and `vite dev`: the sandbox has no network, so Vite cannot be installed. The production build was not run. Run `npm install` and `npm run build` before deploying.
+- Live CoinGecko requests: none were possible. The stub returned CoinGecko shaped payloads with invented numbers. The search response (`coins` with `id`, `name`, `symbol`, `market_cap_rank`, `thumb`) follows the provider's documented shape but was not observed live; check the picker once after deploying.
+- Real devices and other browsers: touch behavior was tested with Chromium emulation only. Android and iOS devices, Firefox and Safari were not tested.
+
+### Known limitations
+
+- Normalization starts at the first available point of each history; for assets listed after the period began the legend says so, but the percentages are not measured from the same date as the other assets.
+- Histories are limited to 1 year. Prices are in USD only.
+- On very narrow screens the multi-asset tooltip can cover part of the lines while it is shown.
+- The picker shows 8 suggestions and at most 10 search results; search needs at least 2 characters.
+- Copy link needs clipboard access (HTTPS and permission); a message is shown when it fails.
+- No package-lock.json (run `npm install` and commit it). Cache and rate limiting are per serverless instance; Vercel edge caching is the shared layer.
+
+### Suggested commit message
+
+```
+feat: add v1.3 asset comparison
+
+Add /compare to compare two to four assets with a shareable URL, an
+accessible asset picker backed by the new /api/search endpoint, market
+cards and a percentage performance chart normalized to the start of the
+selected period. Generalize the line chart to multiple series with a
+tooltip and legend, and handle missing, partial, stale and rate limited
+data without inventing values.
+```
+
 ## v1.2 - Asset pages, watchlist and mobile usability
 
 Status: complete and verified except for the items listed under "Not performed".

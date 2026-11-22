@@ -1,7 +1,14 @@
 import { createMarketHandler } from './market-handler.js';
 import { ApiError } from './errors.js';
-import { extractTrendingIds, normalizeChart, normalizeCoinDetail, normalizeGlobal, normalizeMarkets } from './normalizers.js';
-import { identifier, identifierList, integer, oneOf } from './validation.js';
+import {
+  extractTrendingIds,
+  normalizeChart,
+  normalizeCoinDetail,
+  normalizeGlobal,
+  normalizeMarkets,
+  normalizeSearch,
+} from './normalizers.js';
+import { identifier, identifierList, integer, oneOf, searchText } from './validation.js';
 
 const GLOBAL_TTL_MS = 60_000;
 const MARKETS_TTL_MS = 60_000;
@@ -16,6 +23,7 @@ const CHART_RANGES = Object.freeze({
 const MARKET_ORDERS = ['market_cap_desc', 'volume_desc'];
 const MAX_WATCHLIST_IDS = 50;
 const COIN_TTL_MS = 60_000;
+const SEARCH_TTL_MS = 600_000;
 
 export function createGlobalHandler(options) {
   return createMarketHandler({
@@ -62,6 +70,18 @@ export function createCoinHandler(options) {
       const coin = normalizeCoinDetail(result.data);
       if (!coin) throw ApiError.notFound('Asset not found');
       return { data: { coin }, results: [result] };
+    },
+  });
+}
+
+export function createSearchHandler(options) {
+  return createMarketHandler({
+    ...options,
+    schema: { q: searchText({ required: true }) },
+    edgeSeconds: SEARCH_TTL_MS / 1000,
+    async load(client, { q }) {
+      const result = await client.get('/search', { params: { query: q }, ttlMs: SEARCH_TTL_MS });
+      return { data: normalizeSearch(result.data), results: [result] };
     },
   });
 }

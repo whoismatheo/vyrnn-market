@@ -7,7 +7,8 @@
   "nav": {
     "overview": "Aperçu",
     "markets": "Marchés",
-    "watchlist": "Favoris"
+    "watchlist": "Favoris",
+    "compare": "Comparer"
   },
   "footer": {
     "dataBy": "Données de marché de",
@@ -204,6 +205,48 @@
       "title": "Actif introuvable",
       "message": "Le fournisseur de données de marché n'a aucun actif avec cet identifiant.",
       "action": "Retour à {section}"
+    },
+    "compare": "Comparer"
+  },
+  "compare": {
+    "title": "Comparer des actifs",
+    "description": "Placez deux à quatre actifs côte à côte et voyez comment ils ont évolué sur la même période.",
+    "picker": {
+      "label": "Ajouter un actif",
+      "placeholder": "Rechercher par nom ou symbole",
+      "suggestions": "Principaux actifs par capitalisation",
+      "loading": "Recherche en cours",
+      "noResults": "Aucun actif ne correspond à votre recherche.",
+      "unavailable": "La recherche est indisponible pour le moment. Réessayez dans un instant.",
+      "full": "Vous pouvez comparer jusqu'à {max} actifs. Retirez-en un pour en ajouter un autre.",
+      "results": "{count} résultats disponibles"
+    },
+    "status": {
+      "count": "{count} sur {max} sélectionnés"
+    },
+    "empty": {
+      "title": "Choisissez des actifs à comparer",
+      "message": "Sélectionnez au moins {min} actifs pour voir leurs prix et leur performance côte à côte."
+    },
+    "needMore": "Ajoutez au moins un actif de plus pour commencer la comparaison.",
+    "asset": {
+      "remove": "Retirer {name} de la comparaison",
+      "unavailable": "Aucune donnée de marché n'est disponible pour cet actif."
+    },
+    "chart": {
+      "title": "Performance",
+      "description": "Variation en pourcentage depuis le début de la période sélectionnée.",
+      "summary": "Performance sur {range} : {items}",
+      "empty": "Aucun historique de prix n'est disponible pour les actifs sélectionnés sur cette période.",
+      "noHistory": "Aucun historique",
+      "unavailable": "Indisponible",
+      "startsOn": "L'historique commence le {date}",
+      "partial": "Affichage de {shown} actifs sur {total}."
+    },
+    "share": {
+      "copy": "Copier le lien",
+      "copied": "Lien copié",
+      "failed": "Le lien n'a pas pu être copié."
     }
   }
 }

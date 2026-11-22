@@ -41,6 +41,15 @@ export function formatPercentChange(value, locale) {
   }).format(value / 100);
 }
 
+export function formatPercentAxis(value, locale) {
+  if (!isNumber(value)) return NO_VALUE;
+  return formatter(locale, {
+    style: 'percent',
+    maximumFractionDigits: Math.abs(value) < 10 ? 1 : 0,
+    signDisplay: 'exceptZero',
+  }).format(value / 100);
+}
+
 export function formatPercentShare(value, locale) {
   if (!isNumber(value)) return NO_VALUE;
   return formatter(locale, { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value / 100);

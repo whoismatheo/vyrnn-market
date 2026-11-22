@@ -5,6 +5,8 @@ const IMAGE_HOSTS = new Set(['coin-images.coingecko.com', 'assets.coingecko.com'
 const SPARKLINE_POINTS = 32;
 const CHART_POINTS = 180;
 const MAX_TRENDING = 10;
+const MAX_SEARCH_RESULTS = 10;
+const ASSET_ID_PATTERN = /^[a-z0-9][a-z0-9._-]*$/;
 
 function toNumber(value) {
   return typeof value === 'number' && Number.isFinite(value) ? value : null;
@@ -131,4 +133,27 @@ export function extractTrendingIds(raw) {
   const coins = requireArray(requireObject(raw, 'trending').coins, 'trending');
   const ids = coins.map((entry) => nonEmptyString(entry?.item?.id)).filter(Boolean);
   return [...new Set(ids)].slice(0, MAX_TRENDING);
+}
+
+export function normalizeSearch(raw) {
+  const coins = requireArray(requireObject(raw, 'search').coins, 'search');
+  const results = [];
+
+  for (const entry of coins) {
+    const id = nonEmptyString(entry?.id);
+    const name = nonEmptyString(entry?.name);
+    const symbol = nonEmptyString(entry?.symbol);
+    if (!id || !name || !symbol || id.length > 100 || !ASSET_ID_PATTERN.test(id)) continue;
+
+    results.push({
+      id,
+      name,
+      symbol: symbol.toUpperCase(),
+      rank: toNumber(entry.market_cap_rank),
+      image: safeImageUrl(entry.thumb ?? entry.large),
+    });
+    if (results.length === MAX_SEARCH_RESULTS) break;
+  }
+
+  return { coins: results };
 }

@@ -24,6 +24,14 @@ export const routes = [
     load: () => import('./views/watchlist.js'),
   },
   {
+    path: '/compare',
+    name: 'compare',
+    titleKey: 'compare.title',
+    navKey: 'nav.compare',
+    icon: 'compare',
+    load: () => import('./views/compare.js'),
+  },
+  {
     path: '/coins/:id',
     name: 'coin',
     section: 'markets',

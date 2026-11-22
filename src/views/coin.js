@@ -48,7 +48,12 @@ function createHead(coin) {
           el('p', { class: 'detail-tags' }, el('span', { class: 'tag' }, coin.symbol), coin.rank === null ? null : el('span', { class: 'tag' }, t('detail.rank', { rank: formatInteger(coin.rank, locale) }))),
         ),
       ),
-      createWatchButton(coin, { labeled: true }),
+      el(
+        'div',
+        { class: 'detail-actions' },
+        el('a', { class: 'button button--quiet', href: `/compare?ids=${encodeURIComponent(coin.id)}` }, createIcon('compare', { size: 16 }), t('detail.compare')),
+        createWatchButton(coin, { labeled: true }),
+      ),
     ),
     el(
       'div',

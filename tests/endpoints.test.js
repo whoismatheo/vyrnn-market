@@ -237,3 +237,52 @@ test('coin endpoint validates its input and flags stale details', async () => {
   const res = await call(createCoinHandler, client, '/api/coin?id=bitcoin');
   assert.equal(res.json().meta.stale, true);
 });
+
+test('search endpoint normalizes the query and returns selectable assets', async () => {
+  const { createSearchHandler } = await import('../api/_lib/endpoints.js');
+  const { searchPayload } = await import('./fixtures.js');
+  const client = fakeClient({ '/search': { data: searchPayload } });
+  const res = await call(createSearchHandler, client, '/api/search?q=%20BitCoin%20');
+  const body = res.json();
+
+  assert.equal(res.statusCode, 200);
+  assert.deepEqual(client.calls[0].params, { query: 'bitcoin' });
+  assert.deepEqual(body.data.coins.map((coin) => coin.id), ['bitcoin', 'bitcoin-cash', 'unranked-token']);
+  assert.equal(res.headers['cache-control'], 'public, max-age=0, s-maxage=600, stale-while-revalidate=1200');
+  assert.equal(body.meta.stale, false);
+});
+
+test('search endpoint validates input before contacting the provider', async () => {
+  const { createSearchHandler } = await import('../api/_lib/endpoints.js');
+  const client = fakeClient({ '/search': { data: { coins: [] } } });
+  for (const query of ['', 'q=a', `q=${'x'.repeat(41)}`, 'q=a%26b', 'q=bitcoin&limit=5', 'q=bit&q=coin']) {
+    assert.equal((await call(createSearchHandler, client, `/api/search?${query}`)).statusCode, 400, query);
+  }
+  assert.equal(client.calls.length, 0);
+});
+
+test('search endpoint reports provider problems without results', async () => {
+  const { createSearchHandler } = await import('../api/_lib/endpoints.js');
+  const limited = fakeClient({ '/search': ApiError.upstreamRateLimited(30) });
+  const res = await call(createSearchHandler, limited, '/api/search?q=bitcoin');
+  assert.equal(res.statusCode, 503);
+  assert.equal(res.headers['retry-after'], '30');
+  assert.equal('data' in res.json(), false);
+
+  const stale = fakeClient({ '/search': { data: { coins: [] }, source: 'stale' } });
+  assert.equal((await call(createSearchHandler, stale, '/api/search?q=bitcoin')).json().meta.stale, true);
+});
+
+test('new market endpoints are protected by the per-client rate limit', async () => {
+  const { createSearchHandler } = await import('../api/_lib/endpoints.js');
+  const client = fakeClient({ '/search': { data: { coins: [] } } });
+  const handler = createSearchHandler({ getClient: () => client, limiter: createRateLimiter({ limit: 2, windowMs: 60_000 }) });
+  const statuses = [];
+  for (let i = 0; i < 3; i += 1) {
+    const res = createResponse();
+    await handler(createRequest({ url: '/api/search?q=bitcoin' }), res);
+    statuses.push(res.statusCode);
+  }
+  assert.deepEqual(statuses, [200, 200, 429]);
+  assert.equal(client.calls.length, 2);
+});

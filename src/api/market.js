@@ -20,3 +20,7 @@ export function fetchChart({ id, days, signal }) {
 export function fetchTrending({ signal } = {}) {
   return apiGet('/api/trending', { signal });
 }
+
+export function fetchSearch({ q, signal }) {
+  return apiGet('/api/search', { params: { q }, signal });
+}

@@ -62,7 +62,7 @@ test('dynamically resolved keys exist', () => {
     ...['cap', 'volume'].map((value) => `markets.sort.${value}`),
     ...['rank', 'asset', 'price', 'change', 'marketCap', 'volume', 'trend', 'watch'].map((value) => `table.${value}`),
     ...['marketCapShort', 'volumeShort'].map((value) => `table.${value}`),
-    ...['markets', 'watchlist', 'overview'].map((value) => `nav.${value}`),
+    ...['markets', 'watchlist', 'overview', 'compare'].map((value) => `nav.${value}`),
   ];
   for (const key of keys) assert.ok(english.has(key), key);
 });

@@ -2,15 +2,13 @@ import { fetchChart } from '../api/market.js';
 import { getLanguage, t } from '../i18n/index.js';
 import { el } from '../utils/dom.js';
 import { formatChartTime, formatChartTooltipTime, formatCompactCurrency, formatPrice, percentChange } from '../utils/format.js';
+import { CHART_RANGES, DEFAULT_RANGE } from '../utils/ranges.js';
 import { createResource } from '../utils/resource.js';
 import { createChangeBadge } from './change-badge.js';
 import { createEmptyState, createSkeleton, renderResource } from './data-state.js';
 import { createLineChart } from './line-chart.js';
 import { createPanel } from './panel.js';
 import { createSegmented } from './segmented.js';
-
-const RANGES = ['1', '7', '30', '90', '365'];
-const DEFAULT_RANGE = '7';
 
 function createChartBlock(points, days, assetName) {
   const locale = getLanguage();
@@ -31,12 +29,15 @@ function createChartBlock(points, days, assetName) {
       el('span', { class: 'chart-summary__range' }, range),
     ),
     createLineChart({
-      points,
+      series: [{ id: assetName, points }],
+      area: true,
       label: t('chart.summary', { asset: assetName, range, from: formatPrice(first, locale), to: formatPrice(last, locale) }),
       formatAxisValue: (value) => formatCompactCurrency(value, locale),
       formatAxisTime: (time) => formatChartTime(time, Number(days), locale),
-      formatTooltipValue: (value) => formatPrice(value, locale),
-      formatTooltipTime: (time) => formatChartTooltipTime(time, Number(days), locale),
+      renderTooltip: ({ time, entries }) => [
+        el('span', { class: 'chart__tooltip-value' }, formatPrice(entries[0].point[1], locale)),
+        el('span', { class: 'chart__tooltip-time' }, formatChartTooltipTime(time, Number(days), locale)),
+      ],
     }),
   );
 }
@@ -59,7 +60,7 @@ export function createPriceChart({ assetId, assetName }) {
     title: t('chart.title', { asset: assetName }),
     actions: createSegmented({
       label: t('chart.rangeLabel'),
-      options: RANGES.map((value) => ({ value, label: t(`chart.ranges.${value}`) })),
+      options: CHART_RANGES.map((value) => ({ value, label: t(`chart.ranges.${value}`) })),
       value: days,
       onChange: (value) => {
         days = value;

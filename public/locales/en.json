@@ -7,7 +7,8 @@
   "nav": {
     "overview": "Overview",
     "markets": "Markets",
-    "watchlist": "Watchlist"
+    "watchlist": "Watchlist",
+    "compare": "Compare"
   },
   "footer": {
     "dataBy": "Market data by",
@@ -204,6 +205,48 @@
       "title": "Asset not found",
       "message": "The market data provider has no asset with this identifier.",
       "action": "Back to {section}"
+    },
+    "compare": "Compare"
+  },
+  "compare": {
+    "title": "Compare assets",
+    "description": "Place two to four assets side by side and see how they performed over the same period.",
+    "picker": {
+      "label": "Add an asset",
+      "placeholder": "Search by name or symbol",
+      "suggestions": "Top assets by market cap",
+      "loading": "Searching",
+      "noResults": "No assets match your search.",
+      "unavailable": "Search is unavailable right now. Try again in a moment.",
+      "full": "You can compare up to {max} assets. Remove one to add another.",
+      "results": "{count} results available"
+    },
+    "status": {
+      "count": "{count} of {max} selected"
+    },
+    "empty": {
+      "title": "Choose assets to compare",
+      "message": "Select at least {min} assets to see their prices and performance side by side."
+    },
+    "needMore": "Add at least one more asset to start comparing.",
+    "asset": {
+      "remove": "Remove {name} from the comparison",
+      "unavailable": "Market data is not available for this asset."
+    },
+    "chart": {
+      "title": "Performance",
+      "description": "Percentage change since the start of the selected period.",
+      "summary": "Performance over {range}: {items}",
+      "empty": "No price history is available for the selected assets in this period.",
+      "noHistory": "No history",
+      "unavailable": "Unavailable",
+      "startsOn": "History starts {date}",
+      "partial": "Showing {shown} of {total} assets."
+    },
+    "share": {
+      "copy": "Copy link",
+      "copied": "Link copied",
+      "failed": "The link could not be copied."
     }
   }
 }

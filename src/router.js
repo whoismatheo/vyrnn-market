@@ -31,6 +31,10 @@ export function matchRoute(routes, pathname) {
   return null;
 }
 
+function replaceUrl(target) {
+  window.history.replaceState(window.history.state, '', target);
+}
+
 function setTitle(title) {
   document.title = title ? `${title} - vyrnn` : 'vyrnn';
 }
@@ -66,6 +70,7 @@ export function createRouter({ routes, notFoundRoute, outlet, renderLoadError, o
       params,
       query: new URLSearchParams(search),
       navigate,
+      replace: replaceUrl,
       from: window.history.state?.from ?? null,
       setTitle,
     });

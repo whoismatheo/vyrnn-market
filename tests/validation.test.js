@@ -59,3 +59,19 @@ test('rejects identifier lists that are too long or malformed', async () => {
     assert.throws(() => validateQuery({ ids }, list), (error) => error instanceof ApiError && error.status === 400, ids);
   }
 });
+
+test('normalizes and validates search text', async () => {
+  const { searchText } = await import('../api/_lib/validation.js');
+  const schema = { q: searchText({ required: true }) };
+  assert.deepEqual(validateQuery({ q: '  Bitcoin   CASH ' }, schema), { q: 'bitcoin cash' });
+  assert.deepEqual(validateQuery({ q: 'Dog-e_coin.' }, schema), { q: 'dog-e_coin.' });
+  assert.deepEqual(validateQuery({ q: '\u00c9ther' }, schema), { q: '\u00e9ther' });
+});
+
+test('rejects search text that is empty, too short, too long or contains symbols', async () => {
+  const { searchText } = await import('../api/_lib/validation.js');
+  const schema = { q: searchText({ required: true }) };
+  for (const q of ['', ' ', 'a', ' a ', 'x'.repeat(41), 'bit<coin', 'a&b=c', 'drop;table', 'a/b', '%00ab']) {
+    assert.throws(() => validateQuery(q === '' ? {} : { q }, schema), (error) => error instanceof ApiError && error.status === 400, JSON.stringify(q));
+  }
+});
