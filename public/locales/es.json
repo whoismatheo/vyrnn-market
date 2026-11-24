@@ -8,7 +8,8 @@
     "overview": "Resumen",
     "markets": "Mercados",
     "watchlist": "Favoritos",
-    "compare": "Comparar"
+    "compare": "Comparar",
+    "screener": "Filtros"
   },
   "footer": {
     "dataBy": "Datos de mercado de",
@@ -97,7 +98,8 @@
     "trend": "7d",
     "marketCapShort": "Cap.",
     "watch": "Favoritos",
-    "volumeShort": "Vol."
+    "volumeShort": "Vol.",
+    "compare": "Comparar"
   },
   "status": {
     "title": "Estado del sistema",
@@ -247,6 +249,115 @@
       "copy": "Copiar enlace",
       "copied": "Enlace copiado",
       "failed": "No se pudo copiar el enlace."
+    }
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
+  },
+  "screener": {
+    "title": "Filtro de mercado",
+    "description": "Filtra y ordena criptomonedas por precio, capitalización, volumen, variación 24h, puesto y categoría.",
+    "filters": "Filtros",
+    "search": {
+      "label": "Buscar por nombre o símbolo",
+      "placeholder": "Nombre o símbolo"
+    },
+    "category": {
+      "label": "Categoría",
+      "all": "Todas las categorías",
+      "unavailable": "Las categorías no están disponibles ahora."
+    },
+    "sort": {
+      "label": "Ordenar por",
+      "rank": "Puesto",
+      "price": "Precio",
+      "marketCap": "Capitalización",
+      "volume": "Volumen 24h",
+      "change": "Variación 24h"
+    },
+    "direction": {
+      "asc": "Ascendente",
+      "desc": "Descendente",
+      "toggle": "Dirección del orden"
+    },
+    "depth": {
+      "label": "Activos analizados",
+      "option": "Top {count}",
+      "hint": "Analizar más activos requiere más solicitudes de datos."
+    },
+    "ranges": {
+      "price": "Precio (USD)",
+      "marketCap": "Capitalización (USD)",
+      "volume": "Volumen 24h (USD)",
+      "change": "Variación 24h (%)",
+      "rank": "Puesto de mercado"
+    },
+    "min": "Mín.",
+    "max": "Máx.",
+    "hint": "Los importes admiten K, M, B y T, por ejemplo 2.5b.",
+    "invalid": "Introduce un número sencillo.",
+    "inverted": "El mínimo es mayor que el máximo.",
+    "active": {
+      "label": "Filtros activos",
+      "remove": "Quitar filtro: {label}",
+      "clear": "Borrar todos los filtros",
+      "search": "Búsqueda: {value}",
+      "category": "Categoría: {value}"
+    },
+    "results": {
+      "count": "{count} resultados",
+      "scanned": "Se analizaron los {count} primeros activos",
+      "partial": "Análisis parcial: solo se pudieron cargar {scanned} de los {requested} activos solicitados.",
+      "caption": "Resultados del filtro",
+      "searchScope": "La búsqueda abarca los activos analizados."
+    },
+    "empty": {
+      "title": "Ningún activo coincide con estos filtros",
+      "message": "Amplía un rango, analiza más activos o borra algunos filtros.",
+      "action": "Borrar todos los filtros"
+    },
+    "saved": {
+      "title": "Filtros guardados",
+      "save": "Guardar filtros",
+      "empty": "Aún no hay filtros guardados. Aplica algunos filtros y guárdalos para reutilizarlos.",
+      "apply": "Aplicar",
+      "rename": "Renombrar",
+      "delete": "Eliminar",
+      "applyNamed": "Aplicar {name}",
+      "renameNamed": "Renombrar {name}",
+      "deleteNamed": "Eliminar {name}",
+      "summary": "Filtros: {count}",
+      "nothing": "Aplica al menos un filtro antes de guardar.",
+      "dialog": {
+        "saveTitle": "Guardar filtros",
+        "renameTitle": "Renombrar filtros guardados",
+        "name": "Nombre",
+        "confirm": "Guardar",
+        "cancel": "Cancelar",
+        "duplicate": "Ya existe un filtro guardado con este nombre.",
+        "invalid": "Introduce un nombre de hasta {max} caracteres.",
+        "full": "Puedes guardar hasta {max} configuraciones. Elimina una para guardar otra."
+      },
+      "toast": {
+        "saved": "Guardado \"{name}\"",
+        "renamed": "Renombrado a \"{name}\"",
+        "deleted": "Eliminado \"{name}\"",
+        "notSaved": "Este navegador no pudo guardar tus filtros. Se perderán al cerrar la página."
+      }
+    },
+    "tray": {
+      "label": "Activos seleccionados para comparar",
+      "count": "{count} de {max} seleccionados",
+      "open": "Comparar",
+      "clear": "Vaciar",
+      "full": "Puedes comparar hasta {max} activos."
+    },
+    "actions": {
+      "compareAdd": "Añadir {name} a la comparación",
+      "compareRemove": "Quitar {name} de la comparación"
     }
   }
 }

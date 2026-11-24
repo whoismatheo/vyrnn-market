@@ -8,7 +8,8 @@
     "overview": "Aperçu",
     "markets": "Marchés",
     "watchlist": "Favoris",
-    "compare": "Comparer"
+    "compare": "Comparer",
+    "screener": "Filtres"
   },
   "footer": {
     "dataBy": "Données de marché de",
@@ -97,7 +98,8 @@
     "trend": "7j",
     "marketCapShort": "Cap.",
     "watch": "Favoris",
-    "volumeShort": "Vol."
+    "volumeShort": "Vol.",
+    "compare": "Comparer"
   },
   "status": {
     "title": "État du système",
@@ -247,6 +249,115 @@
       "copy": "Copier le lien",
       "copied": "Lien copié",
       "failed": "Le lien n'a pas pu être copié."
+    }
+  },
+  "theme": {
+    "label": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système"
+  },
+  "screener": {
+    "title": "Filtre de marché",
+    "description": "Filtrez et triez les cryptomonnaies par prix, capitalisation, volume, variation 24h, rang et catégorie.",
+    "filters": "Filtres",
+    "search": {
+      "label": "Rechercher par nom ou symbole",
+      "placeholder": "Nom ou symbole"
+    },
+    "category": {
+      "label": "Catégorie",
+      "all": "Toutes les catégories",
+      "unavailable": "Les catégories sont indisponibles pour le moment."
+    },
+    "sort": {
+      "label": "Trier par",
+      "rank": "Rang",
+      "price": "Prix",
+      "marketCap": "Capitalisation",
+      "volume": "Volume 24h",
+      "change": "Variation 24h"
+    },
+    "direction": {
+      "asc": "Croissant",
+      "desc": "Décroissant",
+      "toggle": "Sens du tri"
+    },
+    "depth": {
+      "label": "Actifs analysés",
+      "option": "Top {count}",
+      "hint": "Analyser plus d'actifs demande plus de requêtes de données."
+    },
+    "ranges": {
+      "price": "Prix (USD)",
+      "marketCap": "Capitalisation (USD)",
+      "volume": "Volume 24h (USD)",
+      "change": "Variation 24h (%)",
+      "rank": "Rang de marché"
+    },
+    "min": "Min.",
+    "max": "Max.",
+    "hint": "Les montants acceptent K, M, B et T, par exemple 2.5b.",
+    "invalid": "Saisissez un nombre simple.",
+    "inverted": "Le minimum est supérieur au maximum.",
+    "active": {
+      "label": "Filtres actifs",
+      "remove": "Retirer le filtre : {label}",
+      "clear": "Effacer tous les filtres",
+      "search": "Recherche : {value}",
+      "category": "Catégorie : {value}"
+    },
+    "results": {
+      "count": "{count} résultats",
+      "scanned": "Les {count} premiers actifs ont été analysés",
+      "partial": "Analyse partielle : seuls {scanned} des {requested} actifs demandés ont pu être chargés.",
+      "caption": "Résultats du filtre",
+      "searchScope": "La recherche porte sur les actifs analysés."
+    },
+    "empty": {
+      "title": "Aucun actif ne correspond à ces filtres",
+      "message": "Élargissez une plage, analysez plus d'actifs ou effacez certains filtres.",
+      "action": "Effacer tous les filtres"
+    },
+    "saved": {
+      "title": "Filtres enregistrés",
+      "save": "Enregistrer les filtres",
+      "empty": "Aucun filtre enregistré pour l'instant. Appliquez des filtres et enregistrez-les pour les réutiliser.",
+      "apply": "Appliquer",
+      "rename": "Renommer",
+      "delete": "Supprimer",
+      "applyNamed": "Appliquer {name}",
+      "renameNamed": "Renommer {name}",
+      "deleteNamed": "Supprimer {name}",
+      "summary": "Filtres : {count}",
+      "nothing": "Appliquez au moins un filtre avant d'enregistrer.",
+      "dialog": {
+        "saveTitle": "Enregistrer les filtres",
+        "renameTitle": "Renommer les filtres enregistrés",
+        "name": "Nom",
+        "confirm": "Enregistrer",
+        "cancel": "Annuler",
+        "duplicate": "Un filtre enregistré porte déjà ce nom.",
+        "invalid": "Saisissez un nom d'au plus {max} caractères.",
+        "full": "Vous pouvez enregistrer jusqu'à {max} configurations. Supprimez-en une pour en enregistrer une autre."
+      },
+      "toast": {
+        "saved": "« {name} » enregistré",
+        "renamed": "Renommé en « {name} »",
+        "deleted": "« {name} » supprimé",
+        "notSaved": "Ce navigateur n'a pas pu enregistrer vos filtres. Ils seront perdus à la fermeture de la page."
+      }
+    },
+    "tray": {
+      "label": "Actifs sélectionnés pour la comparaison",
+      "count": "{count} sur {max} sélectionnés",
+      "open": "Comparer",
+      "clear": "Vider",
+      "full": "Vous pouvez comparer jusqu'à {max} actifs."
+    },
+    "actions": {
+      "compareAdd": "Ajouter {name} à la comparaison",
+      "compareRemove": "Retirer {name} de la comparaison"
     }
   }
 }

@@ -120,3 +120,14 @@ test('follows changes made in another tab through storage events', () => {
   events.dispatchEvent(Object.assign(new Event('storage'), { key: null }));
   assert.deepEqual(list.list(), []);
 });
+
+test('independent lists can use their own storage key', () => {
+  const storage = memoryStorage();
+  const watchlist = createWatchlist({ storage });
+  const tray = createWatchlist({ storage, key: 'vyrnn.compare-tray', max: 4 });
+  watchlist.add('bitcoin');
+  tray.add('ethereum');
+  assert.deepEqual(watchlist.list(), ['bitcoin']);
+  assert.deepEqual(tray.list(), ['ethereum']);
+  assert.deepEqual(createWatchlist({ storage, key: 'vyrnn.compare-tray' }).list(), ['ethereum']);
+});

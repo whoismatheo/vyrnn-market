@@ -2,6 +2,7 @@ import { t } from '../i18n/index.js';
 import { el } from '../utils/dom.js';
 import { formatCompactCurrency, formatInteger, formatPrice } from '../utils/format.js';
 import { createChangeBadge } from './change-badge.js';
+import { createCompareButton } from './compare-button.js';
 import { createCoinCell } from './coin-cell.js';
 import { createSparkline } from './sparkline.js';
 import { createWatchButton } from './watch-button.js';
@@ -20,6 +21,7 @@ const COLUMNS = {
   marketCap: { className: 'col-cap', cell: (coin, locale) => formatCompactCurrency(coin.marketCap, locale) },
   volume: { className: 'col-volume', cell: (coin, locale) => formatCompactCurrency(coin.volume24h, locale) },
   trend: { className: 'col-trend', cell: (coin) => (coin.sparkline ? createSparkline(coin.sparkline) : null) },
+  compare: { className: 'col-compare', cell: (coin) => createCompareButton(coin) },
   watch: { className: 'col-watch', cell: (coin) => createWatchButton(coin) },
 };
 
@@ -33,7 +35,7 @@ function buildMeta(coin, columns, locale) {
 
 function createHeaderCell(name) {
   const { className } = COLUMNS[name];
-  if (name === 'watch') return el('th', { scope: 'col', class: className }, el('span', { class: 'sr-only' }, t('table.watch')));
+  if (name === 'watch' || name === 'compare') return el('th', { scope: 'col', class: className }, el('span', { class: 'sr-only' }, t(`table.${name}`)));
   return el('th', { scope: 'col', class: className }, t(`table.${name}`));
 }
 

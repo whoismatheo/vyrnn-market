@@ -8,7 +8,8 @@
     "overview": "Overview",
     "markets": "Markets",
     "watchlist": "Watchlist",
-    "compare": "Compare"
+    "compare": "Compare",
+    "screener": "Screener"
   },
   "footer": {
     "dataBy": "Market data by",
@@ -97,7 +98,8 @@
     "trend": "7d",
     "marketCapShort": "MCap",
     "watch": "Watchlist",
-    "volumeShort": "Vol"
+    "volumeShort": "Vol",
+    "compare": "Compare"
   },
   "status": {
     "title": "System status",
@@ -247,6 +249,115 @@
       "copy": "Copy link",
       "copied": "Link copied",
       "failed": "The link could not be copied."
+    }
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "screener": {
+    "title": "Market screener",
+    "description": "Filter and sort cryptocurrencies by price, market capitalization, volume, 24h change, rank and category.",
+    "filters": "Filters",
+    "search": {
+      "label": "Search by name or symbol",
+      "placeholder": "Name or symbol"
+    },
+    "category": {
+      "label": "Category",
+      "all": "All categories",
+      "unavailable": "Categories are unavailable right now."
+    },
+    "sort": {
+      "label": "Sort by",
+      "rank": "Rank",
+      "price": "Price",
+      "marketCap": "Market cap",
+      "volume": "24h volume",
+      "change": "24h change"
+    },
+    "direction": {
+      "asc": "Ascending",
+      "desc": "Descending",
+      "toggle": "Sort direction"
+    },
+    "depth": {
+      "label": "Assets scanned",
+      "option": "Top {count}",
+      "hint": "Scanning more assets needs more data requests."
+    },
+    "ranges": {
+      "price": "Price (USD)",
+      "marketCap": "Market cap (USD)",
+      "volume": "24h volume (USD)",
+      "change": "24h change (%)",
+      "rank": "Market rank"
+    },
+    "min": "Min",
+    "max": "Max",
+    "hint": "Amounts accept K, M, B and T, for example 2.5b.",
+    "invalid": "Enter a plain number.",
+    "inverted": "The minimum is greater than the maximum.",
+    "active": {
+      "label": "Active filters",
+      "remove": "Remove filter: {label}",
+      "clear": "Clear all filters",
+      "search": "Search: {value}",
+      "category": "Category: {value}"
+    },
+    "results": {
+      "count": "{count} results",
+      "scanned": "Scanned the top {count} assets",
+      "partial": "Partial scan: only {scanned} of the {requested} requested assets could be loaded.",
+      "caption": "Screener results",
+      "searchScope": "Search covers the assets scanned."
+    },
+    "empty": {
+      "title": "No assets match these filters",
+      "message": "Widen a range, scan more assets or clear some filters.",
+      "action": "Clear all filters"
+    },
+    "saved": {
+      "title": "Saved filters",
+      "save": "Save filters",
+      "empty": "No saved filters yet. Apply some filters and save them to reuse them later.",
+      "apply": "Apply",
+      "rename": "Rename",
+      "delete": "Delete",
+      "applyNamed": "Apply {name}",
+      "renameNamed": "Rename {name}",
+      "deleteNamed": "Delete {name}",
+      "summary": "Filters: {count}",
+      "nothing": "Apply at least one filter before saving.",
+      "dialog": {
+        "saveTitle": "Save filters",
+        "renameTitle": "Rename saved filters",
+        "name": "Name",
+        "confirm": "Save",
+        "cancel": "Cancel",
+        "duplicate": "A saved filter with this name already exists.",
+        "invalid": "Enter a name of up to {max} characters.",
+        "full": "You can save up to {max} configurations. Delete one to save another."
+      },
+      "toast": {
+        "saved": "Saved \"{name}\"",
+        "renamed": "Renamed to \"{name}\"",
+        "deleted": "Deleted \"{name}\"",
+        "notSaved": "This browser could not save your filters. They will be lost when you close the page."
+      }
+    },
+    "tray": {
+      "label": "Assets selected for comparison",
+      "count": "{count} of {max} selected",
+      "open": "Compare",
+      "clear": "Clear",
+      "full": "You can compare up to {max} assets."
+    },
+    "actions": {
+      "compareAdd": "Add {name} to the comparison",
+      "compareRemove": "Remove {name} from the comparison"
     }
   }
 }

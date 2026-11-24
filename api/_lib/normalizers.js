@@ -157,3 +157,17 @@ export function normalizeSearch(raw) {
 
   return { coins: results };
 }
+
+const MAX_CATEGORIES = 60;
+
+export function normalizeCategories(raw) {
+  const categories = [];
+  for (const entry of requireArray(raw, 'categories')) {
+    const id = nonEmptyString(entry?.id);
+    const name = nonEmptyString(entry?.name);
+    if (!id || !name || id.length > 100 || !ASSET_ID_PATTERN.test(id)) continue;
+    categories.push({ id, name, marketCap: toNumber(entry.market_cap) });
+    if (categories.length === MAX_CATEGORIES) break;
+  }
+  return { categories };
+}

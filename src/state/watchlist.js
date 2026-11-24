@@ -17,8 +17,8 @@ function parseStoredIds(raw, max) {
   }
 }
 
-export function createWatchlist({ storage, events = null, max = MAX_ASSETS }) {
-  let ids = parseStoredIds(storage.read(STORAGE_KEY), max);
+export function createWatchlist({ storage, events = null, max = MAX_ASSETS, key = STORAGE_KEY }) {
+  let ids = parseStoredIds(storage.read(key), max);
   const listeners = new Set();
 
   function notify() {
@@ -26,12 +26,12 @@ export function createWatchlist({ storage, events = null, max = MAX_ASSETS }) {
   }
 
   function persist() {
-    return storage.write(STORAGE_KEY, JSON.stringify({ version: 1, ids }));
+    return storage.write(key, JSON.stringify({ version: 1, ids }));
   }
 
   events?.addEventListener('storage', (event) => {
-    if (event.key !== null && event.key !== STORAGE_KEY) return;
-    ids = parseStoredIds(storage.read(STORAGE_KEY), max);
+    if (event.key !== null && event.key !== key) return;
+    ids = parseStoredIds(storage.read(key), max);
     notify();
   });
 

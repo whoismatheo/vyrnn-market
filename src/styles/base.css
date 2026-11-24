@@ -18,7 +18,7 @@ body {
   line-height: 1.55;
   color: var(--color-text);
   background:
-    radial-gradient(1100px 560px at 10% -12%, #ffffff 0%, transparent 62%),
+    radial-gradient(1100px 560px at 10% -12%, var(--bg-glow) 0%, transparent 62%),
     radial-gradient(900px 480px at 100% 0%, var(--color-bg-highlight) 0%, transparent 58%),
     var(--color-bg);
   font-feature-settings: 'cv11', 'ss01';

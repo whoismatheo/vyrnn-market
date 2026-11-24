@@ -24,3 +24,11 @@ export function fetchTrending({ signal } = {}) {
 export function fetchSearch({ q, signal }) {
   return apiGet('/api/search', { params: { q }, signal });
 }
+
+export function fetchScreener({ search, signal }) {
+  return apiGet('/api/screener', { params: Object.fromEntries(new URLSearchParams(search)), signal });
+}
+
+export function fetchCategories({ signal } = {}) {
+  return apiGet('/api/categories', { signal });
+}

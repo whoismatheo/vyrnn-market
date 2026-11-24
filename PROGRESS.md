@@ -1,5 +1,50 @@
 # vyrnn progress
 
+## v1.4 - Market screener and theme system
+
+Status: first complete delivery. Implemented and unit tested. Browser verification is recorded at the end of this section; items not listed as executed were not run.
+
+### Implemented
+
+- Screener at `/screener` (navigation item "Screener"): search by name or symbol, category, sort (rank, price, market cap, 24h volume, 24h change) with direction, minimum and maximum for price, market cap, 24h volume, 24h change and market rank, scan depth (top 250, 500 or 1000), active filter chips with individual removal, clear all, result count, scanned count, pagination (50 per page), loading, empty, error, partial scan and stale states. All filters combine with AND semantics. An asset with an unknown value never matches a filter on that value. Amount fields accept K, M, B and T suffixes.
+- Shareable filters: every filter, sort, depth and page is in the URL (`/screener?q=eth&category=layer-1&sort=change&minPrice=1&maxRank=100`). Parameters are validated and sanitized on load (inverted ranges are swapped, malformed values dropped), the URL is canonicalized, defaults are omitted. Typing updates the URL in place; pagination, chip removal, clear all and applying a saved filter add history entries.
+- Saved filters (localStorage, `vyrnn.screens`): save with a custom name, apply, rename, delete, up to 20, duplicate names refused case-insensitively, invalid or outdated stored data repaired or dropped, storage failures reported. The name dialog is a native modal `dialog`.
+- Categories: live from the provider (`/coins/categories`, top 60 by market cap), cached for one hour with a 24 hour stale window. Nothing is hardcoded. Category filtering is done by the provider (`category` parameter of `/coins/markets`).
+- Quick actions on every result: open the asset page, add or remove from the watchlist, add or remove from a comparison tray (`vyrnn.compare-tray`, maximum 4, a message at the limit). A sticky tray links to `/compare?ids=...` when two or more assets are selected.
+- Theme system: Light, Dark and System, a visible menu in the top bar, persisted in `vyrnn.theme`, applied by `/theme-init.js` before the stylesheet loads (external script because of the CSP) so there is no flash, live updates when the operating system preference changes while System is selected, no reload on change. All colors come from semantic tokens in `tokens.css`; the dark set is a separate design (near-black surfaces, layered grays, silver chrome details, adjusted green and red, inverted ink for buttons and chart series). No component keeps hardcoded colors.
+- Language and theme menus share one accessible `choice-menu` component; category and sort pickers use it too.
+- Translations in EN, ES, PT and FR for all new text.
+
+### Backend
+
+| Endpoint | Behavior |
+| --- | --- |
+| `GET /api/screener` | Loads the top 250, 500 or 1000 assets by market cap (1, 2 or 4 provider requests of 250, cached 120 s and shared between all filter combinations), then filters, searches, sorts and paginates in memory. Optional `category`. Returns `coins`, `total`, `pages`, `page`, `scanned`, `complete`. If only later provider pages fail the result is partial (`complete: false`); if the first page fails the request fails. Validates every parameter (plain decimals only, bounds per field, minimum not greater than maximum). |
+| `GET /api/categories` | Provider categories ordered by market cap. |
+
+- Changing filters never causes new provider requests (the scanned universe is cached); only changing the category or scan depth can.
+- New validators: `number`, `searchText` (v1.3). Pure logic in `api/_lib/screener.js`.
+
+### Files
+
+Added: `api/screener.js`, `api/categories.js`, `api/_lib/screener.js`, `public/theme-init.js`, `src/state/theme.js`, `saved-screens.js`, `compare-tray.js`, `src/utils/screener-state.js`, `src/views/screener.js`, `src/components/choice-menu.js`, `theme-menu.js`, `range-field.js`, `saved-screens-panel.js`, `name-dialog.js`, `compare-button.js`, `compare-tray.js`, tests `screener`, `screener-state`, `saved-screens`, `theme`.
+
+Changed: `api/_lib/endpoints.js`, `normalizers.js`, `validation.js`; `index.html` (theme-init script); `src/state/watchlist.js` (configurable storage key); `src/components/language-menu.js` (now built on `choice-menu`), `shell.js`, `coin-table.js` (compare column), `icon.js`; `src/routes.js`, `src/api/market.js`; all stylesheets (tokens replace every hardcoded color, dark token set, new component styles); translation catalogs; `package.json` (1.4.0); tests `endpoints`, `normalizers`, `validation`, `watchlist`.
+
+Class names of the language menu changed (`lang-*` to `choice-*`, with `data-menu="language"`).
+
+### Verification
+
+Executed:
+
+- Unit tests (`npm test`, Node 22): 185 passed, 0 failed. New: screener filtering, sorting, boundaries, combined filters, pagination, null handling; screener and categories endpoints (provider requests, depth, category, partial scan, stale, validation of 24 invalid inputs, rate limit); number validator; screener URL state; amounts; saved filters (including corrupt data); theme controller and the early init script.
+- `esbuild` bundled the JavaScript (code split) and the stylesheet without errors. This is not a Vite build.
+
+Not performed (see the final section if updated below):
+
+- `vite build` and `vite dev` (no network in the sandbox).
+- Live CoinGecko requests.
+
 ## v1.3 - Asset comparison
 
 Status: complete and verified except for the items listed under "Not performed".

@@ -16,6 +16,14 @@ export const routes = [
     load: () => import('./views/markets.js'),
   },
   {
+    path: '/screener',
+    name: 'screener',
+    titleKey: 'screener.title',
+    navKey: 'nav.screener',
+    icon: 'screener',
+    load: () => import('./views/screener.js'),
+  },
+  {
     path: '/watchlist',
     name: 'watchlist',
     titleKey: 'watchlist.title',

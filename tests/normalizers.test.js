@@ -155,3 +155,21 @@ test('limits search results and rejects malformed search payloads', async () => 
   assert.throws(() => normalizeSearch({}), upstreamError);
   assert.throws(() => normalizeSearch(null), upstreamError);
 });
+
+test('normalizes categories and drops entries that cannot be used as filters', async () => {
+  const { normalizeCategories } = await import('../api/_lib/normalizers.js');
+  const { categories } = normalizeCategories([
+    { id: 'layer-1', name: 'Layer 1 (L1)', market_cap: 2.5e12 },
+    { id: 'Bad Id', name: 'Invalid' },
+    { id: 'gaming', name: '', market_cap: 1 },
+    { name: 'No id' },
+    null,
+    { id: 'decentralized-finance-defi', name: 'DeFi', market_cap: 'not a number' },
+  ]);
+  assert.deepEqual(categories, [
+    { id: 'layer-1', name: 'Layer 1 (L1)', marketCap: 2.5e12 },
+    { id: 'decentralized-finance-defi', name: 'DeFi', marketCap: null },
+  ]);
+  assert.equal(normalizeCategories(Array.from({ length: 200 }, (_, i) => ({ id: `c${i}`, name: `C ${i}` }))).categories.length, 60);
+  assert.throws(() => normalizeCategories({}), upstreamError);
+});

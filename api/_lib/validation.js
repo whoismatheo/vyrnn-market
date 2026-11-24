@@ -19,6 +19,19 @@ export function integer({ min, max, fallback, required = false }) {
   };
 }
 
+export function number({ min, max, fallback, required = false }) {
+  return {
+    required,
+    fallback,
+    parse(raw, name) {
+      if (!/^-?\d+(\.\d+)?$/.test(raw)) throw invalid(name, 'a plain decimal number');
+      const value = Number(raw);
+      if (!Number.isFinite(value) || value < min || value > max) throw invalid(name, `a number between ${min} and ${max}`);
+      return value;
+    },
+  };
+}
+
 export function oneOf(values, { fallback, required = false } = {}) {
   return {
     required,

@@ -77,7 +77,7 @@
 
 .change[data-direction='flat'],
 .change[data-direction='none'] {
-  background: rgb(13 15 18 / 0.05);
+  background: var(--color-fill);
   color: var(--color-text-muted);
 }
 
@@ -126,7 +126,7 @@
 }
 
 .coin-table tbody tr:hover {
-  background: rgb(13 15 18 / 0.025);
+  background: var(--color-row-hover);
 }
 
 .coin-table th:first-child,
@@ -189,7 +189,7 @@
   height: 28px;
   flex: none;
   border-radius: 50%;
-  background: #fff;
+  background: var(--color-logo-bg);
   box-shadow: 0 0 0 1px var(--color-border);
 }
 
@@ -394,7 +394,7 @@
   margin: -5px 0 0 -5px;
   border-radius: 50%;
   background: var(--color-ink);
-  box-shadow: 0 0 0 3px rgb(255 255 255 / 0.9);
+  box-shadow: 0 0 0 3px var(--color-dot-ring);
   pointer-events: none;
 }
 
@@ -407,7 +407,7 @@
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-sm);
-  background: rgb(255 255 255 / 0.95);
+  background: var(--color-menu-bg);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-menu);
@@ -632,4 +632,13 @@
   font-size: var(--text-xs);
   text-decoration: underline;
   cursor: pointer;
+}
+
+.col-compare,
+.col-watch {
+  width: 1%;
+}
+
+.coin-table .col-compare {
+  padding-inline: 0;
 }

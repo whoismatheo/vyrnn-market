@@ -2,6 +2,7 @@ import { matchRoute } from '../router.js';
 import { el } from '../utils/dom.js';
 import { createIcon } from './icon.js';
 import { createLanguageMenu } from './language-menu.js';
+import { createThemeMenu } from './theme-menu.js';
 
 function createBrand(className) {
   return el(
@@ -38,7 +39,7 @@ export function createShell({ routes }) {
     el(
       'div',
       { class: 'app-body' },
-      el('header', { class: 'topbar' }, createBrand('brand--topbar'), el('div', { class: 'topbar__tools' }, createLanguageMenu())),
+      el('header', { class: 'topbar' }, createBrand('brand--topbar'), el('div', { class: 'topbar__tools' }, createThemeMenu(), createLanguageMenu())),
       outlet,
       el(
         'footer',

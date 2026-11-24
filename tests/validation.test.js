@@ -75,3 +75,20 @@ test('rejects search text that is empty, too short, too long or contains symbols
     assert.throws(() => validateQuery(q === '' ? {} : { q }, schema), (error) => error instanceof ApiError && error.status === 400, JSON.stringify(q));
   }
 });
+
+test('parses plain decimal numbers within bounds', async () => {
+  const { number } = await import('../api/_lib/validation.js');
+  const schema = { v: number({ min: -100, max: 1000 }) };
+  assert.deepEqual(validateQuery({ v: '12.5' }, schema), { v: 12.5 });
+  assert.deepEqual(validateQuery({ v: '-100' }, schema), { v: -100 });
+  assert.deepEqual(validateQuery({ v: '1000' }, schema), { v: 1000 });
+  assert.deepEqual(validateQuery({}, schema), { v: undefined });
+});
+
+test('rejects numbers that are malformed or out of bounds', async () => {
+  const { number } = await import('../api/_lib/validation.js');
+  const schema = { v: number({ min: 0, max: 10 }) };
+  for (const v of ['-1', '11', '1e3', '0x10', 'NaN', 'Infinity', '1,5', '.5', '5.', ' 5', '5%']) {
+    assert.throws(() => validateQuery({ v }, schema), (error) => error instanceof ApiError && error.status === 400, v);
+  }
+});
